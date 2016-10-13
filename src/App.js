@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import UserTable from './UserTable';
+import UsersTable from './UserTable';
+import PetsTable from './PetTable';
 
 // import LeftNav from 'material-ui/Snackbar';
 // import AppBar from 'material-ui/AppBar';
@@ -16,7 +17,11 @@ export default class App extends Component {
 
         return (
             <div>
-                <UserTable/>
+                <h1>users</h1>
+                <UsersTable/>
+                <h1>pets</h1>
+                <PetsTable/>
+
             </div>
         );
     }
