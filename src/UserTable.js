@@ -95,7 +95,7 @@ export default class UsersTable extends Component {
         const csv = Json2csv({data: dataToCsv, fields: fields});
 
         var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        if (navigator.msSaveBlob) { // IE 10+
+        if (navigator.msSaveBlob) {
             navigator.msSaveBlob(blob, filename);
         }
         else {

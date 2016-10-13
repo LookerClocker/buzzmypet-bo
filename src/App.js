@@ -1,28 +1,54 @@
 import React, {Component} from 'react';
-import UsersTable from './UserTable';
-import PetsTable from './PetTable';
 
-// import LeftNav from 'material-ui/Snackbar';
-// import AppBar from 'material-ui/AppBar';
-// import MenuItem  from 'material-ui/MenuItem';
-// import ThemeManager  from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
+import LeftNav from 'material-ui/Drawer'
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import MenuItem from 'material-ui/MenuItem';
+
+import { Link } from 'react-router'
+
+injectTapEventPlugin();
 
 export default class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            open: false
+        };
     };
+
+    getChildContext = () => { return {muiTheme: getMuiTheme(baseTheme)};};
+
+    handleToggle = () => this.setState({open: !this.state.open});
+
+    handleClose = () => this.setState({open: false});
 
     render() {
 
         return (
             <div>
-                <h1>users</h1>
-                <UsersTable/>
-                <h1>pets</h1>
-                <PetsTable/>
-
+                <AppBar
+                    title="BuzzMyPets BO"
+                    onTouchTap={this.handleToggle}
+                    iconClassNameRight="muidocs-icon-navigation-expand-more"
+                />
+                <LeftNav
+                    docked={false}
+                    open={this.state.open}
+                    onRequestChange={(open) => this.setState({open})}>
+                        <MenuItem onTouchTap={this.handleClose}><Link to='/users'>Users</Link></MenuItem>
+                        <MenuItem onTouchTap={this.handleClose}><Link to='/pets'>Pets</Link></MenuItem>
+                </LeftNav>
+                {this.props.children}
             </div>
+
         );
     }
 }
+
+App.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired,
+};

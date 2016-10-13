@@ -13,11 +13,11 @@ Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
 var columns = [
     {
         key: 'name',
-        name: 'Name',
+        name: 'Name'
     },
     {
         key: 'user',
-        name: 'User',
+        name: 'User'
     }
 ];
 
@@ -36,7 +36,6 @@ export default class PetsTable extends Component {
         var _this = this;
 
         this.getPets(function (items) {
-            console.log('This is items-> ', items);
             _this.setState({
                 petsList: items
             });
@@ -85,7 +84,7 @@ export default class PetsTable extends Component {
         const csv = Json2csv({data: dataToCsv, fields: fields});
 
         var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        if (navigator.msSaveBlob) { // IE 10+
+        if (navigator.msSaveBlob) {
             navigator.msSaveBlob(blob, filename);
         }
         else {
@@ -120,7 +119,6 @@ export default class PetsTable extends Component {
                     rowsCount={this.state.petsList.length}
                     minHeight={400}/>
             </div>
-
         )
     };
 };
