@@ -2,8 +2,11 @@ import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Json2csv from 'json2csv';
 
-var Parse = require('parse').Parse;
+import {Toolbar, Data} from 'react-data-grid/addons';
 
+var Selectors = Data.Selectors;
+
+var Parse = require('parse').Parse;
 var parseApplicationId = 'KzykKl3uejlA8eNvij0wbc45SS6XaZPqZM3FsIeV';
 var parseJavaScriptKey = 'mplYkntmCwoNEhmH2uuuRPeRosulwSJwxtOqs1gh';
 var parseMasterKey = 'r0J0D2CYbm6Gkilx2IdWO4tOGO2MrVe3SHVjD401';
@@ -14,18 +17,32 @@ var columns = [
     {
         key: 'name',
         name: 'Name',
+        sortable: true,
+        filterable: true
     },
     {
         key: 'lastName',
         name: 'Last Name',
+        sortable: true,
+        filterable: true
     },
     {
         key: 'city',
         name: 'City',
+        sortable: true,
+        filterable: true
     },
     {
         key: 'email',
-        name: 'Email'
+        name: 'Email',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'phoneNo',
+        name: 'Phone',
+        sortable: true,
+        filterable: true
     }
 ];
 
@@ -33,11 +50,12 @@ export default class UsersTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            usersList: []
+            usersList: [],
+            rows: [],
+            filters: {},
+            sortColumn: null,
+            sortDirection: null
         };
-
-        this.rowGetter = this.rowGetter.bind(this);
-        this.toCSV = this.toCSV.bind(this);
     };
 
     componentDidMount() {
@@ -45,9 +63,43 @@ export default class UsersTable extends Component {
 
         this.getUsers(function (items) {
             _this.setState({
-                usersList: items
+                usersList: items,
+                rows: this.state.usersList
             });
+
         });
+    };
+
+    getRows = ()=> {
+        return Selectors.getRows(this.state);
+    };
+
+    getSize = () => {
+        return this.getRows().length;
+    };
+
+    rowGetter = (rowIdx)=> {
+        var rows = this.getRows();
+        return rows[rowIdx];
+    };
+
+    handleGridSort = (sortColumn, sortDirection)=> {
+        var state = Object.assign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
+        this.setState(state);
+    };
+
+    handleFilterChange = (filter)=> {
+        var newFilters = Object.assign({}, this.state.filters);
+        if (filter.filterTerm) {
+            newFilters[filter.column.key] = filter;
+        } else {
+            delete newFilters[filter.column.key];
+        }
+        this.setState({filters: newFilters});
+    };
+
+    onClearFilters = () => {
+        this.setState({filters: {}});
     };
 
     getUsers(callback) {
@@ -65,7 +117,16 @@ export default class UsersTable extends Component {
                             city: user.get('city'),
                             email: user.get('email')
                         }
+                    }),
+                    rows: users.map(function (user) {
+                        return {
+                            name: user.get('name'),
+                            lastName: user.get('lastName'),
+                            city: user.get('city'),
+                            email: user.get('email')
+                        }
                     })
+
                 });
                 callback(users);
             },
@@ -76,18 +137,14 @@ export default class UsersTable extends Component {
         });
     };
 
-    rowGetter(i) {
-        return this.state.usersList[i];
-    };
-
-    toCSV() {
+    toCSV = ()=> {
         var fields = ['name', 'lastName', 'city', 'email'];
-        var dataToCsv = this.state.usersList.map(function (user) {
+        var dataToCsv = this.state.rows.map(function (user) {
             return {
-                name: user.get('name'),
-                lastName: user.get('lastName'),
-                city: user.get('city'),
-                email: user.get('email')
+                name: user.name,
+                lastName: user.lastName,
+                city: user.city,
+                email: user.email
             }
         });
 
@@ -112,7 +169,7 @@ export default class UsersTable extends Component {
                 document.body.removeChild(link);
             }
         }
-    }
+    };
 
     render() {
         return (
@@ -124,11 +181,15 @@ export default class UsersTable extends Component {
                 </button>
                 <ReactDataGrid
                     idProperty="id"
-                    dataSource={this.state.usersList}
+                    onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}
-                    rowsCount={this.state.usersList.length}
-                    minHeight={400}/>
+                    rowsCount={this.getSize()}
+                    minHeight={500}
+                    toolbar={<Toolbar enableFilter={true}/>}
+                    onAddFilter={this.handleFilterChange}
+                    onClearFilters={this.onClearFilters}
+                />
             </div>
 
         )

@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Json2csv from 'json2csv';
 
+import {Toolbar, Data} from 'react-data-grid/addons';
+
+var Selectors = Data.Selectors;
+
 var Parse = require('parse').Parse;
 
 var parseApplicationId = 'KzykKl3uejlA8eNvij0wbc45SS6XaZPqZM3FsIeV';
@@ -13,11 +17,15 @@ Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
 var columns = [
     {
         key: 'name',
-        name: 'Name'
+        name: 'Name',
+        sortable: true,
+        filterable: true
     },
     {
         key: 'user',
-        name: 'User'
+        name: 'User',
+        sortable: true,
+        filterable: true
     }
 ];
 
@@ -25,11 +33,12 @@ export default class PetsTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            petsList: []
+            petsList: [],
+            rows: [],
+            filters: {},
+            sortColumn: null,
+            sortDirection: null
         };
-
-        this.rowGetter = this.rowGetter.bind(this);
-        this.toCSV = this.toCSV.bind(this);
     };
 
     componentDidMount() {
@@ -37,9 +46,42 @@ export default class PetsTable extends Component {
 
         this.getPets(function (items) {
             _this.setState({
-                petsList: items
+                petsList: items,
+                rows: this.state.petsList
             });
         });
+    };
+
+    getRows = ()=> {
+        return Selectors.getRows(this.state);
+    };
+
+    getSize = () => {
+        return this.getRows().length;
+    };
+
+    rowGetter = (rowIdx)=> {
+        var rows = this.getRows();
+        return rows[rowIdx];
+    };
+
+    handleGridSort = (sortColumn, sortDirection)=> {
+        var state = Object.assign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
+        this.setState(state);
+    };
+
+    handleFilterChange = (filter)=> {
+        var newFilters = Object.assign({}, this.state.filters);
+        if (filter.filterTerm) {
+            newFilters[filter.column.key] = filter;
+        } else {
+            delete newFilters[filter.column.key];
+        }
+        this.setState({filters: newFilters});
+    };
+
+    onClearFilters = () => {
+        this.setState({filters: {}});
     };
 
     getPets(callback) {
@@ -56,6 +98,12 @@ export default class PetsTable extends Component {
                             name: pet.get('name'),
                             user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
                         }
+                    }),
+                    rows: pets.map(function (pet) {
+                        return {
+                            name: pet.get('name'),
+                            user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
+                        }
                     })
                 });
                 callback(pets);
@@ -67,16 +115,12 @@ export default class PetsTable extends Component {
         });
     };
 
-    rowGetter(i) {
-        return this.state.petsList[i];
-    };
-
-    toCSV() {
+    toCSV = ()=> {
         var fields = ['name', 'user'];
-        var dataToCsv = this.state.petsList.map(function (pet) {
+        var dataToCsv = this.state.rows.map(function (pet) {
             return {
-                name: pet.get('name'),
-                user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
+                name: pet.name,
+                user: (pet.user) ? pet.user : "no name"
             }
         });
 
@@ -101,7 +145,7 @@ export default class PetsTable extends Component {
                 document.body.removeChild(link);
             }
         }
-    }
+    };
 
     render() {
         return (
@@ -113,11 +157,14 @@ export default class PetsTable extends Component {
                 </button>
                 <ReactDataGrid
                     idProperty="id"
-                    dataSource={this.state.petsList}
+                    onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}
-                    rowsCount={this.state.petsList.length}
-                    minHeight={400}/>
+                    rowsCount={this.getSize()}
+                    minHeight={500}
+                    toolbar={<Toolbar enableFilter={true}/>}
+                    onAddFilter={this.handleFilterChange}
+                    onClearFilters={this.onClearFilters}/>
             </div>
         )
     };
