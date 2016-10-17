@@ -156,7 +156,6 @@ export default class PetsTable extends Component {
                     to csv
                 </button>
                 <ReactDataGrid
-                    idProperty="id"
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}

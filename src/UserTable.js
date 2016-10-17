@@ -43,6 +43,24 @@ var columns = [
         name: 'Phone',
         sortable: true,
         filterable: true
+    },
+    {
+        key: 'birthday',
+        name: 'Birthday',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'gender',
+        name: 'Gender',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'pets',
+        name: 'Pets',
+        sortable: true,
+        filterable: true
     }
 ];
 
@@ -107,15 +125,25 @@ export default class UsersTable extends Component {
 
         var query = new Parse.Query('User');
         query.limit(10000);
+        query.include('pet');
         query.find({
             success: function (users) {
+                console.log('USERS-> ',users);
                 _this.setState({
                     usersList: users.map(function (user) {
                         return {
                             name: user.get('name'),
                             lastName: user.get('lastName'),
                             city: user.get('city'),
-                            email: user.get('email')
+                            email: user.get('email'),
+                            phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
+                            birthday: user.get('birthday') ? user.get('birthday').toLocaleDateString() : 'no date',
+                            gender: user.get('gender') ? user.get('gender') : 'no gender',
+                            // pets: user.get('pets') ? user.get('pets').map(function(pet){
+                            //     return {
+                            //         id: pet.id
+                            //     }
+                            // }): 'no pets'
                         }
                     }),
                     rows: users.map(function (user) {
@@ -123,7 +151,15 @@ export default class UsersTable extends Component {
                             name: user.get('name'),
                             lastName: user.get('lastName'),
                             city: user.get('city'),
-                            email: user.get('email')
+                            email: user.get('email'),
+                            phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
+                            birthday: user.get('birthday') ? user.get('birthday').toLocaleDateString() : 'no date',
+                            gender: user.get('gender') ? user.get('gender') : 'no gender',
+                            // pets: user.get('pets') ? user.get('pets').map(function(pet){
+                            //     return {
+                            //         id: pet.id
+                            //     }
+                            // }): 'no pets'
                         }
                     })
 
@@ -138,13 +174,17 @@ export default class UsersTable extends Component {
     };
 
     toCSV = ()=> {
-        var fields = ['name', 'lastName', 'city', 'email'];
+        var fields = ['name', 'lastName', 'city', 'email','phoneNo','birthday', 'gender', 'pets'];
         var dataToCsv = this.state.rows.map(function (user) {
             return {
                 name: user.name,
                 lastName: user.lastName,
                 city: user.city,
-                email: user.email
+                email: user.email,
+                phoneNo: (user.phoneNo) ? user.phoneNo : 'no phone',
+                birthday: (user.birthday) ? user.birthday : 'no date',
+                gender: (user.gender) ? user.gender : 'no gender',
+                pets: (user.pets) ? user.pets : 'no pets'
             }
         });
 
@@ -172,6 +212,7 @@ export default class UsersTable extends Component {
     };
 
     render() {
+        console.log(this.state.usersList);
         return (
             <div>
                 <button
@@ -180,7 +221,6 @@ export default class UsersTable extends Component {
                     to csv
                 </button>
                 <ReactDataGrid
-                    idProperty="id"
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}

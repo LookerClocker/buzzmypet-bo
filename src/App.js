@@ -34,7 +34,6 @@ export default class App extends Component {
                 <AppBar
                     title='BuzzMyPets BO'
                     onTouchTap={this.handleToggle}
-                    iconClassNameRight='muidocs-icon-navigation-expand-more'
                     iconElementRight={<FlatButton label='to CSV'/>}
                 />
                 <LeftNav
