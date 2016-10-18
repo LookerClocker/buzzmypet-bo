@@ -25,7 +25,7 @@ export default class App extends Component {
 
     handleToggle = () => this.setState({open: !this.state.open});
 
-    handleClose = () => this.setState({open: false});
+    handleClose = () =>this.setState({open: false});
 
     render() {
 

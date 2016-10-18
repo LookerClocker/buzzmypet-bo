@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Json2csv from 'json2csv';
 
-import {Toolbar, Data} from 'react-data-grid/addons';
+import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 
 var Selectors = Data.Selectors;
 
@@ -46,9 +46,10 @@ var columns = [
     },
     {
         key: 'birthday',
-        name: 'Birthday',
+        name: 'Age',
         sortable: true,
-        filterable: true
+        filterable: true,
+        filterRenderer: Filters.NumericFilter
     },
     {
         key: 'gender',
@@ -87,7 +88,7 @@ export default class UsersTable extends Component {
 
         });
     };
-
+    // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
         return Selectors.getRows(this.state);
     };
@@ -120,48 +121,56 @@ export default class UsersTable extends Component {
         this.setState({filters: {}});
     };
 
+    // CALCULATE AGE FROM BIRTH DATE
+    getAge = (born, now) => {
+        var birthday = new Date(now.getFullYear(), born.getMonth(), born.getDate());
+        if (now >= birthday)
+            return now.getFullYear() - born.getFullYear();
+        else
+            return now.getFullYear() - born.getFullYear() - 1;
+    };
+
+    calculateAge = (date)=> {
+        var dob = date;
+        var now = new Date();
+        var birthdate = dob.split('/');
+        var born = new Date(birthdate[2], birthdate[1] - 1, birthdate[0]);
+        var age = this.getAge(born, now);
+
+        return age;
+    };
+
+    // FULLFILL USER`S ARRAY
+    fullFill = (object)=> {
+        var _this = this;
+        return object.map(function (user) {
+            return {
+                name: user.get('name'),
+                lastName: user.get('lastName'),
+                city: user.get('city'),
+                email: user.get('email'),
+                phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
+                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').toLocaleDateString()) : 'no date',
+                gender: user.get('gender') ? user.get('gender') : 'no gender',
+                pets: user.get('pets') ? user.get('pets').map(function (pet) {
+                    return pet.get('breed');
+                }).join(', ') : 'no pets'
+            }
+        });
+    };
+
+    // GET USERS FROM PARSE.COM
     getUsers(callback) {
         var _this = this;
 
         var query = new Parse.Query('User');
         query.limit(10000);
-        query.include('pet');
+        query.include('pets');
         query.find({
             success: function (users) {
-                console.log('USERS-> ',users);
                 _this.setState({
-                    usersList: users.map(function (user) {
-                        return {
-                            name: user.get('name'),
-                            lastName: user.get('lastName'),
-                            city: user.get('city'),
-                            email: user.get('email'),
-                            phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
-                            birthday: user.get('birthday') ? user.get('birthday').toLocaleDateString() : 'no date',
-                            gender: user.get('gender') ? user.get('gender') : 'no gender',
-                            // pets: user.get('pets') ? user.get('pets').map(function(pet){
-                            //     return {
-                            //         id: pet.id
-                            //     }
-                            // }): 'no pets'
-                        }
-                    }),
-                    rows: users.map(function (user) {
-                        return {
-                            name: user.get('name'),
-                            lastName: user.get('lastName'),
-                            city: user.get('city'),
-                            email: user.get('email'),
-                            phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
-                            birthday: user.get('birthday') ? user.get('birthday').toLocaleDateString() : 'no date',
-                            gender: user.get('gender') ? user.get('gender') : 'no gender',
-                            // pets: user.get('pets') ? user.get('pets').map(function(pet){
-                            //     return {
-                            //         id: pet.id
-                            //     }
-                            // }): 'no pets'
-                        }
-                    })
+                    usersList: _this.fullFill(users),
+                    rows: _this.fullFill(users)
 
                 });
                 callback(users);
@@ -173,8 +182,9 @@ export default class UsersTable extends Component {
         });
     };
 
+    // EXPORT USERS TO CSV FILE
     toCSV = ()=> {
-        var fields = ['name', 'lastName', 'city', 'email','phoneNo','birthday', 'gender', 'pets'];
+        var fields = ['name', 'lastName', 'city', 'email', 'phoneNo', 'age', 'gender', 'pets'];
         var dataToCsv = this.state.rows.map(function (user) {
             return {
                 name: user.name,
@@ -182,9 +192,9 @@ export default class UsersTable extends Component {
                 city: user.city,
                 email: user.email,
                 phoneNo: (user.phoneNo) ? user.phoneNo : 'no phone',
-                birthday: (user.birthday) ? user.birthday : 'no date',
+                age: (user.birthday) ? user.birthday : 'no date',
                 gender: (user.gender) ? user.gender : 'no gender',
-                pets: (user.pets) ? user.pets : 'no pets'
+                pets: user.pets ? user.pets : 'no pets'
             }
         });
 
@@ -212,7 +222,6 @@ export default class UsersTable extends Component {
     };
 
     render() {
-        console.log(this.state.usersList);
         return (
             <div>
                 <button

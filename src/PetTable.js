@@ -52,6 +52,7 @@ export default class PetsTable extends Component {
         });
     };
 
+    // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
         return Selectors.getRows(this.state);
     };
@@ -84,6 +85,17 @@ export default class PetsTable extends Component {
         this.setState({filters: {}});
     };
 
+    // FULLFILL USER`S ARRAY
+    fullFill = (object)=> {
+        return object.map(function (pet) {
+            return {
+                name: pet.get('name'),
+                user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
+            }
+        });
+    };
+
+    // GET PETS FROM PARSE.COM
     getPets(callback) {
         var _this = this;
 
@@ -93,18 +105,8 @@ export default class PetsTable extends Component {
         query.find({
             success: function (pets) {
                 _this.setState({
-                    petsList: pets.map(function (pet) {
-                        return {
-                            name: pet.get('name'),
-                            user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
-                        }
-                    }),
-                    rows: pets.map(function (pet) {
-                        return {
-                            name: pet.get('name'),
-                            user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
-                        }
-                    })
+                    petsList: _this.fullFill(pets),
+                    rows: _this.fullFill(pets)
                 });
                 callback(pets);
             },
@@ -115,6 +117,7 @@ export default class PetsTable extends Component {
         });
     };
 
+    // EXPORT PETS TO CSV FILE
     toCSV = ()=> {
         var fields = ['name', 'user'];
         var dataToCsv = this.state.rows.map(function (pet) {
