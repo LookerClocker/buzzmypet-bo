@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Json2csv from 'json2csv';
+import FlatButton from 'material-ui/FlatButton';
 
 import PubSub from 'pubsub-js';
 
@@ -54,9 +55,15 @@ export default class ExportToCSV extends Component {
     };
 
     render() {
+        const styles = {
+            title: {
+                cursor: 'pointer',
+                color: '#fff'
+            },
+        };
         return (
             <div>
-                <button onClick={this.toCSV}>CSV</button>
+                <FlatButton style={styles.title} label='download CSV' onClick={this.toCSV}/>
             </div>
         )
     }

@@ -8,7 +8,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LeftNav from 'material-ui/Drawer'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
 
 import {Link} from 'react-router'
 
@@ -35,8 +34,7 @@ export default class App extends Component {
             <div>
                 <AppBar
                     title='BuzzMyPets BO'
-                    onTouchTap={this.handleToggle}
-                    /*iconElementRight={<FlatButton label="to CSV"/>}*/
+                    onTitleTouchTap={this.handleToggle}
                     iconElementRight={<CSV/>}
                 />
                 <LeftNav
