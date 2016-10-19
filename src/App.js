@@ -35,7 +35,8 @@ export default class App extends Component {
                 <AppBar
                     title='BuzzMyPets BO'
                     onTitleTouchTap={this.handleToggle}
-                    iconElementRight={<CSV/>}
+                    onLeftIconButtonTouchTap={this.handleToggle}
+                    iconElementRight={<CSV path={this.props.children.props.route.path}/>}
                 />
                 <LeftNav
                     docked={false}

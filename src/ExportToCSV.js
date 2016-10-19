@@ -30,7 +30,7 @@ export default class ExportToCSV extends Component {
     toCSV = ()=> {
         var fields = Object.keys(this.state.rows[0]);
 
-        const filename = 'smth.csv';
+        const filename = this.props.path + '.csv';
         const csv = Json2csv({data: this.state.rows, fields: fields});
 
         var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
