@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import CSV from './ExportToCSV'
 
 import AppBar from 'material-ui/AppBar';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -9,7 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 
-import { Link } from 'react-router'
+import {Link} from 'react-router'
 
 injectTapEventPlugin();
 
@@ -21,27 +22,29 @@ export default class App extends Component {
         };
     };
 
-    getChildContext = () => { return {muiTheme: getMuiTheme(baseTheme)};};
+    getChildContext = () => {
+        return {muiTheme: getMuiTheme(baseTheme)};
+    };
 
     handleToggle = () => this.setState({open: !this.state.open});
 
     handleClose = () =>this.setState({open: false});
 
     render() {
-
         return (
             <div>
                 <AppBar
                     title='BuzzMyPets BO'
                     onTouchTap={this.handleToggle}
-                    iconElementRight={<FlatButton label='to CSV'/>}
+                    /*iconElementRight={<FlatButton label="to CSV"/>}*/
+                    iconElementRight={<CSV/>}
                 />
                 <LeftNav
                     docked={false}
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}>
-                        <MenuItem onTouchTap={this.handleClose}><Link to='/users'>Users</Link></MenuItem>
-                        <MenuItem onTouchTap={this.handleClose}><Link to='/pets'>Pets</Link></MenuItem>
+                    <MenuItem onTouchTap={this.handleClose}><Link to='/users'>Users</Link></MenuItem>
+                    <MenuItem onTouchTap={this.handleClose}><Link to='/pets'>Pets</Link></MenuItem>
                 </LeftNav>
                 {this.props.children}
             </div>

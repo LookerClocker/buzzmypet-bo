@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Json2csv from 'json2csv';
 
+import PubSub from 'pubsub-js';
+
 import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 
 var Selectors = Data.Selectors;
@@ -85,9 +87,35 @@ export default class UsersTable extends Component {
                 usersList: items,
                 rows: this.state.usersList
             });
+        });
 
+        PubSub.publish('MY TOPIC', columns);
+    };
+
+
+    // GET USERS FROM PARSE.COM
+    getUsers(callback) {
+        var _this = this;
+
+        var query = new Parse.Query('User');
+        query.limit(10000);
+        query.include('pets');
+        query.find({
+            success: function (users) {
+                _this.setState({
+                    usersList: _this.fullFill(users),
+                    rows: _this.fullFill(users)
+
+                });
+                callback(users);
+            },
+            error: function (error) {
+                console.error('getUser() error', error);
+                callback(null, error);
+            }
         });
     };
+
     // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
         return Selectors.getRows(this.state);
@@ -159,76 +187,10 @@ export default class UsersTable extends Component {
         });
     };
 
-    // GET USERS FROM PARSE.COM
-    getUsers(callback) {
-        var _this = this;
-
-        var query = new Parse.Query('User');
-        query.limit(10000);
-        query.include('pets');
-        query.find({
-            success: function (users) {
-                _this.setState({
-                    usersList: _this.fullFill(users),
-                    rows: _this.fullFill(users)
-
-                });
-                callback(users);
-            },
-            error: function (error) {
-                console.error('getUser() error', error);
-                callback(null, error);
-            }
-        });
-    };
-
-    // EXPORT USERS TO CSV FILE
-    toCSV = ()=> {
-        var fields = ['name', 'lastName', 'city', 'email', 'phoneNo', 'age', 'gender', 'pets'];
-        var dataToCsv = this.state.rows.map(function (user) {
-            return {
-                name: user.name,
-                lastName: user.lastName,
-                city: user.city,
-                email: user.email,
-                phoneNo: (user.phoneNo) ? user.phoneNo : 'no phone',
-                age: (user.birthday) ? user.birthday : 'no date',
-                gender: (user.gender) ? user.gender : 'no gender',
-                pets: user.pets ? user.pets : 'no pets'
-            }
-        });
-
-        const filename = 'Users.csv';
-        const csv = Json2csv({data: dataToCsv, fields: fields});
-
-        var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        if (navigator.msSaveBlob) {
-            navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var link = document.createElement('a');
-
-            if (link.download !== undefined) {
-
-                var url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-    };
-
     render() {
+        PubSub.publish('rows', this.state.rows);
         return (
             <div>
-                <button
-                    className="col-md-offset-10 btn btn-success"
-                    onClick={this.toCSV}>
-                    to csv
-                </button>
                 <ReactDataGrid
                     onGridSort={this.handleGridSort}
                     columns={columns}

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Json2csv from 'json2csv';
 
+import PubSub from 'pubsub-js';
+
 import {Toolbar, Data} from 'react-data-grid/addons';
 
 var Selectors = Data.Selectors;
@@ -52,6 +54,28 @@ export default class PetsTable extends Component {
         });
     };
 
+    // GET PETS FROM PARSE.COM
+    getPets(callback) {
+        var _this = this;
+
+        var query = new Parse.Query('Pet');
+        query.limit(10000);
+        query.include('user');
+        query.find({
+            success: function (pets) {
+                _this.setState({
+                    petsList: _this.fullFill(pets),
+                    rows: _this.fullFill(pets)
+                });
+                callback(pets);
+            },
+            error: function (error) {
+                console.error('getPets() error', error);
+                callback(null, error);
+            }
+        });
+    };
+
     // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
         return Selectors.getRows(this.state);
@@ -95,69 +119,10 @@ export default class PetsTable extends Component {
         });
     };
 
-    // GET PETS FROM PARSE.COM
-    getPets(callback) {
-        var _this = this;
-
-        var query = new Parse.Query('Pet');
-        query.limit(10000);
-        query.include('user');
-        query.find({
-            success: function (pets) {
-                _this.setState({
-                    petsList: _this.fullFill(pets),
-                    rows: _this.fullFill(pets)
-                });
-                callback(pets);
-            },
-            error: function (error) {
-                console.error('getPets() error', error);
-                callback(null, error);
-            }
-        });
-    };
-
-    // EXPORT PETS TO CSV FILE
-    toCSV = ()=> {
-        var fields = ['name', 'user'];
-        var dataToCsv = this.state.rows.map(function (pet) {
-            return {
-                name: pet.name,
-                user: (pet.user) ? pet.user : "no name"
-            }
-        });
-
-        const filename = 'Pets.csv';
-        const csv = Json2csv({data: dataToCsv, fields: fields});
-
-        var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        if (navigator.msSaveBlob) {
-            navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var link = document.createElement('a');
-
-            if (link.download !== undefined) {
-
-                var url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-    };
-
     render() {
+        PubSub.publish('rows', this.state.rows);
         return (
             <div>
-                <button
-                    className="col-md-offset-10 btn btn-success"
-                    onClick={this.toCSV}>
-                    to csv
-                </button>
                 <ReactDataGrid
                     onGridSort={this.handleGridSort}
                     columns={columns}

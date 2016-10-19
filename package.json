@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "event-emitter": "^0.3.4",
     "json2csv": "^3.7.0",
     "material-ui": "^0.16.0",
+    "pubsub-js": "^1.5.4",
     "react-bootstrap": "^0.30.5",
     "react-data-grid": "^1.0.51",
     "react-router": "^2.8.1",
