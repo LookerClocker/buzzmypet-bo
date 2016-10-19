@@ -9,6 +9,9 @@ import LeftNav from 'material-ui/Drawer'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MenuItem from 'material-ui/MenuItem';
 
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './index.css'
+
 import {Link} from 'react-router'
 
 injectTapEventPlugin();

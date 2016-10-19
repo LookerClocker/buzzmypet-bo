@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
-import Json2csv from 'json2csv';
 
 import PubSub from 'pubsub-js';
 
