@@ -185,8 +185,7 @@ export default class UsersTable extends Component {
     };
 
     render() {
-        console.log('hello check');
-        // PubSub.publish('rows', this.getRows());
+        PubSub.publish('rows', this.getRows());
         return (
             <div>
                 <ReactDataGrid
