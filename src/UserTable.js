@@ -66,6 +66,8 @@ var columns = [
     }
 ];
 
+var userWithPets = [];
+
 export default class UsersTable extends Component {
     constructor(props) {
         super(props);
@@ -74,7 +76,8 @@ export default class UsersTable extends Component {
             rows: [],
             filters: {},
             sortColumn: null,
-            sortDirection: null
+            sortDirection: null,
+            pointers: []
         };
     };
 
@@ -84,11 +87,10 @@ export default class UsersTable extends Component {
         this.getUsers(function (items) {
             _this.setState({
                 usersList: items,
-                rows: this.state.usersList
+                rows: this.state.usersList,
+                pointers: []
             });
         });
-
-        PubSub.publish('MY TOPIC', columns);
     };
 
 
@@ -103,9 +105,12 @@ export default class UsersTable extends Component {
             success: function (users) {
                 _this.setState({
                     usersList: _this.fullFill(users),
-                    rows: _this.fullFill(users)
-
-                });
+                    rows: _this.fullFill(users),
+                    pointers: users.map(function (user) {
+                            return user.id;
+                    })
+            });
+                _this.state.pointers = _this.state.pointers.filter(function(n){ return n !== undefined });
                 callback(users);
             },
             error: function (error) {
@@ -188,6 +193,7 @@ export default class UsersTable extends Component {
 
     render() {
         PubSub.publish('rows', this.state.rows);
+        PubSub.publish('pointers', this.state.pointers);
         return (
             <div>
                 <ReactDataGrid

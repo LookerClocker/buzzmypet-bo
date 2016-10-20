@@ -20,12 +20,10 @@ export default class ExportToCSV extends Component {
     };
 
     subscriberRows =(msg, data) => {
-        console.log(msg, data);
         this.setState({
             rows: data
         });
     };
-
 
     toCSV = ()=> {
         var fields = Object.keys(this.state.rows[0]);
@@ -57,6 +55,8 @@ export default class ExportToCSV extends Component {
     render() {
         const styles = {
             title: {
+                position:'relative',
+                top: '8px',
                 cursor: 'pointer',
                 color: '#fff'
             },

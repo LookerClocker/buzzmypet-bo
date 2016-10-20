@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import CSV from './ExportToCSV'
+import Push from './Push'
+
+import PubSub from 'pubsub-js';
 
 import AppBar from 'material-ui/AppBar';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -20,8 +23,24 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false
+            open: false,
+            path: this.props.children.props.route.path,
+            pointers: []
         };
+    };
+
+    componentDidMount() {
+        this.token = PubSub.subscribe('pointers', this.subscriberRows);
+    };
+
+    componentWillUnmount() {
+        PubSub.unsubscribe(this.token)
+    };
+
+    subscriberRows =(msg, data) => {
+        this.setState({
+            pointers: data
+        });
     };
 
     getChildContext = () => {
@@ -30,7 +49,7 @@ export default class App extends Component {
 
     handleToggle = () => this.setState({open: !this.state.open});
 
-    handleClose = () =>this.setState({open: false});
+    handleClose= () =>this.setState({open: false});
 
     render() {
         return (
@@ -39,7 +58,8 @@ export default class App extends Component {
                     title='BuzzMyPets BO'
                     onTitleTouchTap={this.handleToggle}
                     onLeftIconButtonTouchTap={this.handleToggle}
-                    iconElementRight={<CSV path={this.props.children.props.route.path}/>}
+                    iconElementRight={<Push pointers={this.state.pointers} path={this.state.path}/>}
+                    children={<CSV path={this.state.path}/>}
                 />
                 <LeftNav
                     docked={false}
