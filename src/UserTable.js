@@ -66,17 +66,18 @@ var columns = [
     }
 ];
 
-var userWithPets = [];
-
 export default class UsersTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+
             usersList: [],
             rows: [],
+
             filters: {},
             sortColumn: null,
             sortDirection: null,
+
             pointers: []
         };
     };
@@ -85,12 +86,13 @@ export default class UsersTable extends Component {
         var _this = this;
 
         this.getUsers(function (items) {
+            console.log('items-> ',items);
             _this.setState({
                 usersList: items,
-                rows: this.state.usersList,
-                pointers: []
+                rows: this.state.usersList
             });
         });
+
     };
 
 
@@ -105,12 +107,8 @@ export default class UsersTable extends Component {
             success: function (users) {
                 _this.setState({
                     usersList: _this.fullFill(users),
-                    rows: _this.fullFill(users),
-                    pointers: users.map(function (user) {
-                            return user.id;
-                    })
+                    rows: _this.fullFill(users)
             });
-                _this.state.pointers = _this.state.pointers.filter(function(n){ return n !== undefined });
                 callback(users);
             },
             error: function (error) {
@@ -177,6 +175,7 @@ export default class UsersTable extends Component {
         var _this = this;
         return object.map(function (user) {
             return {
+                id: user.id,
                 name: user.get('name'),
                 lastName: user.get('lastName'),
                 city: user.get('city'),
@@ -191,9 +190,16 @@ export default class UsersTable extends Component {
         });
     };
 
+    pointer = () =>{
+        this.getRows().map(function(user){
+            return user;
+        })
+    };
+
     render() {
-        PubSub.publish('rows', this.state.rows);
-        PubSub.publish('pointers', this.state.pointers);
+
+        PubSub.publish('rows', this.getRows());
+
         return (
             <div>
                 <ReactDataGrid

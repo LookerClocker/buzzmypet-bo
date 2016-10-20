@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField'
+import SnackBar from './Snackbar'
 
 var Parse = require('parse').Parse;
 var parseApplicationId = 'KzykKl3uejlA8eNvij0wbc45SS6XaZPqZM3FsIeV';
@@ -9,6 +10,8 @@ var parseJavaScriptKey = 'mplYkntmCwoNEhmH2uuuRPeRosulwSJwxtOqs1gh';
 var parseMasterKey = 'r0J0D2CYbm6Gkilx2IdWO4tOGO2MrVe3SHVjD401';
 
 Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
+
+var snackbar = '';
 
 export default class Push extends Component {
     constructor(props) {
@@ -24,7 +27,16 @@ export default class Push extends Component {
     };
 
     handleSend = () => {
-        Parse.Cloud.run('SendPush', {pointers: this.props.pointers, message: this.state.message});
+        var data = this.props.pointers.map(function(user){
+            return user.id;
+        });
+
+        Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message}).then(function(success){
+            snackbar =  <SnackBar/>;
+            console.log(success);
+        }, function (error) {
+            console.log(error);
+        });
 
         this.setState({
             message: '',
@@ -78,6 +90,7 @@ export default class Push extends Component {
                                onChange={e => this.setState({message: e.target.value})}
                     />
                 </Dialog>
+                {snackbar}
             </div>
         )
     }

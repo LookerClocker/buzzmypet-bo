@@ -119,7 +119,7 @@ export default class PetsTable extends Component {
     };
 
     render() {
-        PubSub.publish('rows', this.state.rows);
+        PubSub.publish('rows', this.getRows());
         return (
             <div>
                 <ReactDataGrid

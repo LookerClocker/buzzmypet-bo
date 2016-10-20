@@ -30,7 +30,7 @@ export default class App extends Component {
     };
 
     componentDidMount() {
-        this.token = PubSub.subscribe('pointers', this.subscriberRows);
+        this.token = PubSub.subscribe('rows', this.subscriberRows);
     };
 
     componentWillUnmount() {
