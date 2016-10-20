@@ -11,12 +11,6 @@ export default class SnackbarExampleSimple extends React.Component {
         };
     }
 
-    // handleTouchTap = () => {
-    //     this.setState({
-    //         open: true,
-    //     });
-    // };
-
     handleRequestClose = () => {
         this.setState({
             open: false,

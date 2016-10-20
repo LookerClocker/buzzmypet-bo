@@ -24,13 +24,16 @@ export default class App extends Component {
         super(props);
         this.state = {
             open: false,
-            path: this.props.children.props.route.path,
+            path: 'pets',
             pointers: []
         };
     };
 
     componentDidMount() {
         this.token = PubSub.subscribe('rows', this.subscriberRows);
+        this.setState({
+            path: this.props.children.props.route.path
+        })
     };
 
     componentWillUnmount() {
@@ -49,7 +52,9 @@ export default class App extends Component {
 
     handleToggle = () => this.setState({open: !this.state.open});
 
-    handleClose= () =>this.setState({open: false});
+    handleCloseUsers = () =>this.setState({open: false, path: 'users'});
+    handleClosePets= () =>this.setState({open: false, path: 'pets'});
+
 
     render() {
         return (
@@ -65,8 +70,8 @@ export default class App extends Component {
                     docked={false}
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}>
-                    <MenuItem onTouchTap={this.handleClose}><Link to='/users'>Users</Link></MenuItem>
-                    <MenuItem onTouchTap={this.handleClose}><Link to='/pets'>Pets</Link></MenuItem>
+                    <MenuItem><Link onTouchTap={this.handleCloseUsers} to='/users'>Users</Link></MenuItem>
+                    <MenuItem><Link onTouchTap={this.handleClosePets} to='/pets'>Pets</Link></MenuItem>
                 </LeftNav>
                 {this.props.children}
             </div>

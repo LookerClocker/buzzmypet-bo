@@ -27,12 +27,12 @@ export default class Push extends Component {
     };
 
     handleSend = () => {
-        var data = this.props.pointers.map(function(user){
+        var data = this.props.pointers.map(function (user) {
             return user.id;
         });
 
-        Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message}).then(function(success){
-            snackbar =  <SnackBar/>;
+        Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message}).then(function (success) {
+            snackbar = <SnackBar/>;
             console.log(success);
         }, function (error) {
             console.log(error);
@@ -59,8 +59,8 @@ export default class Push extends Component {
             }
         };
 
-        // var pushButton = (this.props.path === 'users') ?
-        //     <FlatButton label="Push" style={styles.title} onTouchTap={this.handleOpen}/> : '';
+        var pushButton = (this.props.path === 'users') ?
+            <FlatButton label="Push" style={styles.title} onTouchTap={this.handleOpen}/> : '';
 
         const actions = [
             <FlatButton
@@ -78,7 +78,7 @@ export default class Push extends Component {
 
         return (
             <div>
-                <FlatButton label="Push" style={styles.title} onTouchTap={this.handleOpen}/>
+                {pushButton}
                 <Dialog
                     title="Enter a message which will send for users"
                     actions={actions}
@@ -90,7 +90,9 @@ export default class Push extends Component {
                                onChange={e => this.setState({message: e.target.value})}
                     />
                 </Dialog>
+
                 {snackbar}
+
             </div>
         )
     }

@@ -70,15 +70,11 @@ export default class UsersTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
             usersList: [],
             rows: [],
-
             filters: {},
             sortColumn: null,
-            sortDirection: null,
-
-            pointers: []
+            sortDirection: null
         };
     };
 
@@ -86,7 +82,6 @@ export default class UsersTable extends Component {
         var _this = this;
 
         this.getUsers(function (items) {
-            console.log('items-> ',items);
             _this.setState({
                 usersList: items,
                 rows: this.state.usersList
@@ -94,7 +89,6 @@ export default class UsersTable extends Component {
         });
 
     };
-
 
     // GET USERS FROM PARSE.COM
     getUsers(callback) {
@@ -190,16 +184,9 @@ export default class UsersTable extends Component {
         });
     };
 
-    pointer = () =>{
-        this.getRows().map(function(user){
-            return user;
-        })
-    };
-
     render() {
-
-        PubSub.publish('rows', this.getRows());
-
+        console.log('hello check');
+        // PubSub.publish('rows', this.getRows());
         return (
             <div>
                 <ReactDataGrid
