@@ -1,15 +1,14 @@
 import React from 'react';
-import App from './App';
 
 import Users from './UserTable';
-import Pets from './PetTable'
-import history from 'react-router/lib/hashHistory';
+import Pets from './PetTable';
+import { browserHistory } from 'react-router';
 import Router from 'react-router/lib/Router';
 import Route from 'react-router/lib/Route';
 
 export default (
-    <Router history={ history }>
-        <Route path='/' component={ App }>
+    <Router history={browserHistory}>
+        <Route path='/' component={ Pets }>
             <Route path='users' component={ Users }/>
             <Route path='pets' component={ Pets }/>
         </Route>

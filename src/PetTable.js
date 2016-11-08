@@ -24,7 +24,25 @@ var columns = [
     },
     {
         key: 'user',
-        name: 'User',
+        name: 'Owner',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'breed',
+        name: 'Breed',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'age',
+        name: 'Age',
+        sortable: true,
+        filterable: true
+    },
+    {
+        key: 'color',
+        name: 'Color',
         sortable: true,
         filterable: true
     }
@@ -113,7 +131,10 @@ export default class PetsTable extends Component {
         return object.map(function (pet) {
             return {
                 name: pet.get('name'),
-                user: (pet.get('user')) ? pet.get('user').get('name') : "no name"
+                user: (pet.get('user')) ? pet.get('user').get('name') : "no name",
+                breed: pet.get('breed'),
+                age: pet.get('age'),
+                color: pet.get('color')
             }
         });
     };

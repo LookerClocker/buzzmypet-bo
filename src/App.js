@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import CSV from './ExportToCSV'
 import Push from './Push'
+import Pets from './PetTable'
 
 import PubSub from 'pubsub-js';
 
@@ -17,6 +18,7 @@ import './index.css'
 
 import {Link} from 'react-router'
 
+var x = false;
 injectTapEventPlugin();
 
 export default class App extends Component {
@@ -31,9 +33,6 @@ export default class App extends Component {
 
     componentDidMount() {
         this.token = PubSub.subscribe('rows', this.subscriberRows);
-        // this.setState({
-        //     path: this.props.children.props.route.path
-        // })
     };
 
     componentWillReceiveProps(nextProps) {
@@ -46,7 +45,7 @@ export default class App extends Component {
         PubSub.unsubscribe(this.token)
     };
 
-    subscriberRows =(msg, data) => {
+    subscriberRows = (msg, data) => {
         this.setState({
             pointers: data
         });
@@ -59,10 +58,11 @@ export default class App extends Component {
     handleToggle = () => this.setState({open: !this.state.open});
 
     handleCloseUsers = () =>this.setState({open: false, path: 'users'});
-    handleClosePets= () =>this.setState({open: false, path: 'pets'});
+    handleClosePets = () =>this.setState({open: false, path: 'pets'});
 
 
     render() {
+        var defaultView = (this.state.path==='pets' ? <Pets/> : this.props.children);
         return (
             <div>
                 <AppBar
@@ -79,7 +79,7 @@ export default class App extends Component {
                     <MenuItem><Link onTouchTap={this.handleCloseUsers} to='/users'>Users</Link></MenuItem>
                     <MenuItem><Link onTouchTap={this.handleClosePets} to='/pets'>Pets</Link></MenuItem>
                 </LeftNav>
-                {this.props.children}
+                {defaultView}
             </div>
 
         );
