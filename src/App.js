@@ -31,8 +31,14 @@ export default class App extends Component {
 
     componentDidMount() {
         this.token = PubSub.subscribe('rows', this.subscriberRows);
+        // this.setState({
+        //     path: this.props.children.props.route.path
+        // })
+    };
+
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            path: this.props.children.props.route.path
+            path: nextProps.children.props.route.path
         })
     };
 
