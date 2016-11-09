@@ -12,6 +12,10 @@ module.exports = {
         extensions: ['', '.js', '.jsx']
     },
 
+    node: {
+        fs: "empty"
+    },
+
     module: {
         loaders: [
             {

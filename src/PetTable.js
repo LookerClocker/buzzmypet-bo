@@ -142,7 +142,7 @@ export default class PetsTable extends Component {
     render() {
         PubSub.publish('rows', this.getRows());
         return (
-            <div>
+            <div className="move-grid">
                 <ReactDataGrid
                     onGridSort={this.handleGridSort}
                     columns={columns}

@@ -169,7 +169,6 @@ export default class UsersTable extends Component {
         var _this = this;
         return object.map(function (user) {
             return {
-                id: user.id,
                 name: user.get('name'),
                 lastName: user.get('lastName'),
                 city: user.get('city'),
@@ -187,7 +186,7 @@ export default class UsersTable extends Component {
     render() {
         PubSub.publish('rows', this.getRows());
         return (
-            <div>
+            <div className="move-grid">
                 <ReactDataGrid
                     onGridSort={this.handleGridSort}
                     columns={columns}
