@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Papa from 'babyparse';
+// import Papa from 'babyparse';
 import FlatButton from 'material-ui/FlatButton';
 import PubSub from 'pubsub-js';
 
@@ -28,15 +28,19 @@ export default class ExportToCSV extends Component {
     // export data from json to csv with 'papa parse'
     toCSV = ()=> {
         var fields = Object.keys(this.state.rows[0]);
-
         const filename = this.props.path + '.csv';
 
-        var csv = Papa.unparse({
-            fields: fields,
-            data: this.state.rows
-        });
+        var data = this.state.rows;
 
-        var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+        var replacer = function(key, value) { return value === null ? '' : value };
+        var csv = data.map(function(row){
+            return fields.map(function(fieldName){
+                return JSON.stringify(row[fieldName], replacer)
+            }).join(',')
+        });
+        csv.unshift(fields.join(','));
+
+        var blob = new Blob([csv.join('\r\n')], {type: 'text/csv;charset=utf-8;'});
         if (navigator.msSaveBlob) {
             navigator.msSaveBlob(blob, filename);
         }

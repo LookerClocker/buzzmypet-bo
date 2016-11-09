@@ -26,7 +26,6 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
-    "babyparse": "^0.4.6",
     "fs": "0.0.1-security",
     "material-ui": "^0.16.0-rc2",
     "parse": "^1.9.2",
