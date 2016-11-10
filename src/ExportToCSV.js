@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import Papa from 'babyparse';
 import FlatButton from 'material-ui/FlatButton';
 import PubSub from 'pubsub-js';
 
