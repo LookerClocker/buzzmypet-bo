@@ -56,7 +56,9 @@ export default class PetsTable extends Component {
             rows: [],
             filters: {},
             sortColumn: null,
-            sortDirection: null
+            sortDirection: null,
+            height:window.innerHeight
+
         };
     };
 
@@ -140,6 +142,7 @@ export default class PetsTable extends Component {
     };
 
     render() {
+
         PubSub.publish('rows', this.getRows());
         return (
             <div className="move-grid">
@@ -148,7 +151,7 @@ export default class PetsTable extends Component {
                     columns={columns}
                     rowGetter={this.rowGetter}
                     rowsCount={this.getSize()}
-                    minHeight={500}
+                    minHeight={this.state.height}
                     toolbar={<Toolbar enableFilter={true}/>}
                     onAddFilter={this.handleFilterChange}
                     onClearFilters={this.onClearFilters}/>

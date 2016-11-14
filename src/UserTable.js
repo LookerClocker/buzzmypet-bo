@@ -74,7 +74,8 @@ export default class UsersTable extends Component {
             rows: [],
             filters: {},
             sortColumn: null,
-            sortDirection: null
+            sortDirection: null,
+            height:window.innerHeight
         };
     };
 
@@ -191,8 +192,8 @@ export default class UsersTable extends Component {
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}
+                    minHeight={this.state.height}
                     rowsCount={this.getSize()}
-                    minHeight={500}
                     toolbar={<Toolbar enableFilter={true}/>}
                     onAddFilter={this.handleFilterChange}
                     onClearFilters={this.onClearFilters}
