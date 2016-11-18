@@ -19,50 +19,66 @@ var columns = [
         key: 'name',
         name: 'Name',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'lastName',
         name: 'Last Name',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'city',
         name: 'City',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'email',
         name: 'Email',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'phoneNo',
         name: 'Phone',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'birthday',
         name: 'Age',
         sortable: true,
         filterable: true,
-        filterRenderer: Filters.NumericFilter
+        filterRenderer: Filters.NumericFilter,
+        editable: true
+    },
+    {
+        key: 'registrationDate',
+        name: 'Registration Date',
+        sortable: true,
+        filterable: true,
+        filterRenderer: Filters.NumericFilter,
+        editable: true
     },
     {
         key: 'gender',
         name: 'Gender',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     },
     {
         key: 'pets',
         name: 'Pets',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable: true
     }
 ];
 
@@ -88,7 +104,6 @@ export default class UsersTable extends Component {
                 rows: this.state.usersList
             });
         });
-
     };
 
     // GET USERS FROM PARSE.COM
@@ -150,9 +165,9 @@ export default class UsersTable extends Component {
     getAge = (born, now) => {
         var birthday = new Date(now.getFullYear(), born.getMonth(), born.getDate());
         if (now >= birthday)
-            return now.getFullYear() - born.getFullYear();
+            return now.getFullYear() - born.getFullYear() + ' years';
         else
-            return now.getFullYear() - born.getFullYear() - 1;
+            return now.getFullYear() - born.getFullYear() - 1 + ' years';
     };
 
     calculateAge = (date)=> {
@@ -174,12 +189,13 @@ export default class UsersTable extends Component {
                 lastName: user.get('lastName'),
                 city: user.get('city'),
                 email: user.get('email'),
-                phoneNo: user.get('phoneNo') ? user.get('phoneNo') : 'no phone',
-                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').toLocaleDateString()) : 'no date',
-                gender: user.get('gender') ? user.get('gender') : 'no gender',
+                phoneNo: user.get('phoneNo') ? user.get('phoneNo') : ' ',
+                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').toLocaleDateString()) : '',
+                gender: user.get('gender') == 0 ? 'male' : user.get('gender') == 1 ? 'female' : '',
                 pets: user.get('pets') ? user.get('pets').map(function (pet) {
                     return pet.get('breed');
-                }).join(', ') : 'no pets'
+                }).join(', ') : ' ',
+                registrationDate: user.createdAt.toLocaleDateString()
             }
         });
     };
@@ -187,8 +203,10 @@ export default class UsersTable extends Component {
     render() {
         PubSub.publish('rows', this.getRows());
         return (
-            <div className="move-grid">
+            <div>
+                <strong className="total">Total users: {this.getRows().length}</strong>
                 <ReactDataGrid
+                    enableCellSelect={true}
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}

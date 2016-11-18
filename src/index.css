@@ -5,3 +5,8 @@ body {
 .move-grid {
   padding:10px 10px 0 20px;
 }
+
+.total {
+  position: relative;
+  top: 34px;
+}

@@ -10,6 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MenuItem from 'material-ui/MenuItem';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
+import '../node_modules/react-data-grid/dist/react-data-grid.css'
 
 import {Link} from 'react-router'
 injectTapEventPlugin();
@@ -58,7 +59,7 @@ export default class App extends Component {
         return (
             <div>
                 <AppBar
-                    title='BuzzMyPets BO'
+                    title='BuzzMyPet BO'
                     onTitleTouchTap={this.handleToggle}
                     onLeftIconButtonTouchTap={this.handleToggle}
                     iconElementRight={<Push pointers={this.state.pointers} path={this.state.path}/>}

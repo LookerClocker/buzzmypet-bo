@@ -20,31 +20,36 @@ var columns = [
         key: 'name',
         name: 'Name',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable : true
     },
     {
         key: 'user',
         name: 'Owner',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable : true
     },
     {
         key: 'breed',
         name: 'Breed',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable : true
     },
     {
         key: 'age',
         name: 'Age',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable : true
     },
     {
         key: 'color',
         name: 'Color',
         sortable: true,
-        filterable: true
+        filterable: true,
+        editable : true
     }
 ];
 
@@ -78,7 +83,7 @@ export default class PetsTable extends Component {
         var _this = this;
 
         var query = new Parse.Query('Pet');
-        query.limit(10000);
+        query.limit(1000);
         query.include('user');
         query.find({
             success: function (pets) {
@@ -135,18 +140,19 @@ export default class PetsTable extends Component {
                 name: pet.get('name'),
                 user: (pet.get('user')) ? pet.get('user').get('name') : "no name",
                 breed: pet.get('breed'),
-                age: pet.get('age'),
+                age:   pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months',
                 color: pet.get('color')
             }
         });
     };
 
     render() {
-
         PubSub.publish('rows', this.getRows());
         return (
-            <div className="move-grid">
+            <div>
+                <strong className="total">Total pets: {this.getRows().length}</strong>
                 <ReactDataGrid
+                    enableCellSelect={true}
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}
