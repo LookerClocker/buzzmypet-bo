@@ -140,7 +140,7 @@ export default class PetsTable extends Component {
                 name: pet.get('name'),
                 user: (pet.get('user')) ? pet.get('user').get('name') : "no name",
                 breed: pet.get('breed'),
-                age:   pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months',
+                age:  pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
                 color: pet.get('color')
             }
         });

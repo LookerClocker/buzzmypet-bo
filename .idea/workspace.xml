@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="445b8886-9022-4f9d-b6b9-39604b952f41" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/UserTable.js" afterPath="$PROJECT_DIR$/src/UserTable.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PetTable.js" afterPath="$PROJECT_DIR$/src/PetTable.js" />
     </list>
     <ignored path="BuzzMYPetBO.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -85,7 +85,7 @@
         <entry file="file://$PROJECT_DIR$/src/PetTable.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="139">
-              <caret line="142" column="107" selection-start-line="142" selection-start-column="107" selection-end-line="142" selection-end-column="107" />
+              <caret line="142" column="139" selection-start-line="142" selection-start-column="139" selection-end-line="142" selection-end-column="139" />
               <folding />
             </state>
           </provider>
@@ -385,15 +385,15 @@
       <workItem from="1479294478251" duration="16000" />
       <workItem from="1479299724915" duration="16000" />
       <workItem from="1479377599798" duration="28000" />
-      <workItem from="1479480994975" duration="7911000" />
+      <workItem from="1479480994975" duration="8105000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="220705000" />
+    <option name="totallyTimeSpent" value="220899000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15773809" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -746,7 +746,7 @@
     <entry file="file://$PROJECT_DIR$/src/PetTable.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="139">
-          <caret line="142" column="107" selection-start-line="142" selection-start-column="107" selection-end-line="142" selection-end-column="107" />
+          <caret line="142" column="139" selection-start-line="142" selection-start-column="139" selection-end-line="142" selection-end-column="139" />
           <folding />
         </state>
       </provider>
