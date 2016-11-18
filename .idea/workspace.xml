@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="445b8886-9022-4f9d-b6b9-39604b952f41" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/App.js" afterPath="$PROJECT_DIR$/src/App.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PetTable.js" afterPath="$PROJECT_DIR$/src/PetTable.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/UserTable.js" afterPath="$PROJECT_DIR$/src/UserTable.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.css" afterPath="$PROJECT_DIR$/src/index.css" />
     </list>
     <ignored path="BuzzMYPetBO.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserTable.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="UserTable.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/UserTable.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="81" column="5" selection-start-line="81" selection-start-column="5" selection-end-line="81" selection-end-column="5" />
+            <state relative-caret-position="255">
+              <caret line="204" column="36" selection-start-line="204" selection-start-column="36" selection-end-line="204" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -85,11 +81,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PetTable.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PetTable.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/PetTable.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-949">
-              <caret line="84" column="43" selection-start-line="84" selection-start-column="43" selection-end-line="84" selection-end-column="43" />
+            <state relative-caret-position="139">
+              <caret line="142" column="107" selection-start-line="142" selection-start-column="107" selection-end-line="142" selection-end-column="107" />
               <folding />
             </state>
           </provider>
@@ -133,8 +129,8 @@
         <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/ExportToCSV.js" />
         <option value="$PROJECT_DIR$/src/index.css" />
-        <option value="$PROJECT_DIR$/src/PetTable.js" />
         <option value="$PROJECT_DIR$/src/UserTable.js" />
+        <option value="$PROJECT_DIR$/src/PetTable.js" />
       </list>
     </option>
   </component>
@@ -389,15 +385,15 @@
       <workItem from="1479294478251" duration="16000" />
       <workItem from="1479299724915" duration="16000" />
       <workItem from="1479377599798" duration="28000" />
-      <workItem from="1479480994975" duration="7234000" />
+      <workItem from="1479480994975" duration="7911000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="220028000" />
+    <option name="totallyTimeSpent" value="220705000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15773809" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -739,18 +735,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PetTable.js">
+    <entry file="file://$PROJECT_DIR$/src/UserTable.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-949">
-          <caret line="84" column="43" selection-start-line="84" selection-start-column="43" selection-end-line="84" selection-end-column="43" />
+        <state relative-caret-position="255">
+          <caret line="204" column="36" selection-start-line="204" selection-start-column="36" selection-end-line="204" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/UserTable.js">
+    <entry file="file://$PROJECT_DIR$/src/PetTable.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="81" column="5" selection-start-line="81" selection-start-column="5" selection-end-line="81" selection-end-column="5" />
+        <state relative-caret-position="139">
+          <caret line="142" column="107" selection-start-line="142" selection-start-column="107" selection-end-line="142" selection-end-column="107" />
           <folding />
         </state>
       </provider>

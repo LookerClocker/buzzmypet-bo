@@ -59,6 +59,14 @@ var columns = [
         editable: true
     },
     {
+        key: 'birthDate',
+        name: 'Birthday',
+        sortable: true,
+        filterable: true,
+        filterRenderer: Filters.NumericFilter,
+        editable: true
+    },
+    {
         key: 'registrationDate',
         name: 'Registration Date',
         sortable: true,
@@ -195,7 +203,8 @@ export default class UsersTable extends Component {
                 pets: user.get('pets') ? user.get('pets').map(function (pet) {
                     return pet.get('breed');
                 }).join(', ') : ' ',
-                registrationDate: user.createdAt.toLocaleDateString()
+                registrationDate: user.createdAt.toLocaleDateString(),
+                birthDate: user.get('birthday')? user.get('birthday') .toLocaleDateString() : '',
             }
         });
     };
