@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
 
-import PubSub from 'pubsub-js';
+import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 
-import {Toolbar, Data} from 'react-data-grid/addons';
+import {Link} from 'react-router'
 
 var Selectors = Data.Selectors;
 
 var Parse = require('parse').Parse;
-
 var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
 var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
 var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
@@ -17,85 +16,95 @@ Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
 
 var columns = [
     {
-        key: 'name',
-        name: 'Name',
+        key: 'title',
+        name: 'Title',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
-        key: 'user',
-        name: 'Owner',
+        key: 'address',
+        name: 'Address',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
-        key: 'breed',
-        name: 'Breed',
+        key: 'city',
+        name: 'City',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
-        key: 'age',
-        name: 'Age',
+        key: 'phone',
+        name: 'Phone',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
-        key: 'color',
-        name: 'Color',
+        key: 'email',
+        name: 'Email',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
+    },
+    {
+        key: 'createdAt',
+        name: 'Created at',
+        sortable: true,
+        filterRenderer: Filters.NumericFilter,
+        filterable: true,
+        editable: true
     }
 ];
 
-export default class PetsTable extends Component {
+export default class Shelters extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            petsList: [],
+            shelters: [],
             rows: [],
-            filters: {},
-            sortColumn: null,
-            sortDirection: null,
-            height:window.innerHeight
-
-        };
-    };
+            height: window.innerHeight
+        }
+    }
 
     componentDidMount() {
         var _this = this;
 
-        this.getPets(function (items) {
+        this.getShelters(function (items) {
             _this.setState({
-                petsList: items,
-                rows: this.state.petsList
+                shelters: _this.fullFill(items),
+                rows: _this.fullFill(items)
             });
+        })
+    };
+
+    getShelters=(callback)=> {
+        var query = new Parse.Query('Shelter');
+        query.limit(1000);
+        query.find({
+            success: function (shelters) {
+                callback(shelters);
+            },
+            error: function (error) {
+                console.error('getShelters() error', error);
+                callback(null, error);
+            }
         });
     };
 
-    // GET PETS FROM PARSE.COM
-    getPets(callback) {
-        var _this = this;
-
-        var query = new Parse.Query('Pet');
-        query.limit(1000);
-        query.include('user');
-        query.find({
-            success: function (pets) {
-                _this.setState({
-                    petsList: _this.fullFill(pets),
-                    rows: _this.fullFill(pets)
-                });
-                callback(pets);
-            },
-            error: function (error) {
-                console.error('getPets() error', error);
-                callback(null, error);
+    fullFill=(object)=>{
+        return object.map(function (shelter) {
+            return {
+                title: shelter.get('title'),
+                createdAt: shelter.get('createdAt').toLocaleDateString(),
+                address: shelter.get('address') ? shelter.get('address') : '',
+                phone: shelter.get('phone') ? shelter.get('phone') : '',
+                city: shelter.get('city') ? shelter.get('city') : '',
+                email: shelter.get('email') ? shelter.get('email') : '',
+                location: shelter.get('location') ? shelter.get('location') : '',
             }
         });
     };
@@ -133,35 +142,22 @@ export default class PetsTable extends Component {
         this.setState({filters: {}});
     };
 
-    // FULLFILL USER`S ARRAY
-    fullFill = (object)=> {
-        return object.map(function (pet) {
-            return {
-                name: pet.get('name'),
-                user: (pet.get('user')) ? pet.get('user').get('name') : " ",
-                breed: pet.get('breed'),
-                age:  pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
-                color: pet.get('color')
-            }
-        });
-    };
-
     render() {
-        PubSub.publish('rows', this.getRows());
         return (
             <div>
-                <strong className="total">Total pets: {this.getRows().length}</strong>
+                <Link to="new_shelter"><button className="btn btn-default add_shelter">Add shelter</button></Link>
                 <ReactDataGrid
                     enableCellSelect={true}
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}
-                    rowsCount={this.getSize()}
                     minHeight={this.state.height}
+                    rowsCount={this.getSize()}
                     toolbar={<Toolbar enableFilter={true}/>}
                     onAddFilter={this.handleFilterChange}
-                    onClearFilters={this.onClearFilters}/>
+                    onClearFilters={this.onClearFilters}
+                />
             </div>
         )
-    };
-};
+    }
+}

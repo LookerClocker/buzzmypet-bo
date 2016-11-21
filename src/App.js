@@ -71,6 +71,7 @@ export default class App extends Component {
                     onRequestChange={(open) => this.setState({open})}>
                     <Link onTouchTap={this.handleCloseUsers} to='/users'><MenuItem>Users</MenuItem></Link>
                     <Link onTouchTap={this.handleClosePets} to='/pets'><MenuItem>Pets</MenuItem></Link>
+                    <Link onTouchTap={this.handleClosePets} to='/shelters'><MenuItem>Shelters</MenuItem></Link>
                 </LeftNav>
                 {this.props.children}
             </div>
