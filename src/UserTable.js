@@ -30,6 +30,14 @@ var columns = [
         editable: true
     },
     {
+        key: 'userName',
+        name: 'User Name',
+        sortable: true,
+        filterable: true,
+        editable: true
+    },
+
+    {
         key: 'city',
         name: 'City',
         sortable: true,
@@ -194,6 +202,7 @@ export default class UsersTable extends Component {
         return object.map(function (user) {
             return {
                 name: user.get('name'),
+                userName: user.get('username'),
                 lastName: user.get('lastName'),
                 city: user.get('city'),
                 email: user.get('email'),
