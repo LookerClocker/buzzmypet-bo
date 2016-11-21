@@ -153,7 +153,7 @@ export default class Shelters extends Component {
                 <div className="total-shelters"><strong>Total shelters:{this.getRows().length}</strong></div>
                 <Link to="new_shelter"><button className="btn btn-default add_shelter">Add shelter</button></Link>
                 <ReactDataGrid
-                    enableCell Select={true}
+                    enableCellSelect={true}
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}

@@ -19,7 +19,8 @@ export default class AddShelter extends Component {
             latitude: '',
             longitude: '',
             sentShelter: false,
-            buttTitle: 'Add shelter'
+            buttTitle: 'Add shelter',
+            message: 'The new shelter has been added successfully!'
         }
     }
 
@@ -28,6 +29,7 @@ export default class AddShelter extends Component {
         if (this.props.params.id) {
             this.getShelter(function (item) {
                 _this.setState({
+                    message: 'Shelter has been updated successfully!',
                     buttTitle: 'Save changes',
                     title: item.get('title'),
                     phone: item.get('phone'),
@@ -41,6 +43,7 @@ export default class AddShelter extends Component {
         }
     };
 
+    // update shelters
     getShelter = (callback)=> {
         var query = new Parse.Query('Shelter');
         query.limit(1000);
@@ -56,43 +59,78 @@ export default class AddShelter extends Component {
         });
     };
 
-    addShelter = ()=> {
+    updateShelter = () => {
         var _this = this;
+        var query = new Parse.Query('Shelter');
+        query.equalTo("objectId", this.props.params.id);
         var location = new Parse.GeoPoint({
             latitude: parseFloat(this.state.latitude),
             longitude: parseFloat(this.state.longitude)
         });
-        var ShelterClass = Parse.Object.extend('Shelter');
-        var shelter = new ShelterClass();
-
-        shelter.set('title', this.state.title);
-        shelter.set('phone', this.state.phone);
-        shelter.set('address', this.state.address);
-        shelter.set('city', this.state.city);
-        shelter.set('email', this.state.email);
-        shelter.set('location', location);
-
-        // save and send data to Parse
-        shelter.save(null, {
-            success: function (shelter) {
-                _this.setState({
-                    sentShelter: true
+        query.first({
+            success: function (Shelter) {
+                Shelter.save(null, {
+                    success: function (shelter) {
+                        shelter.set('title', _this.state.title);
+                        shelter.set('phone', _this.state.phone);
+                        shelter.set('address', _this.state.address);
+                        shelter.set('city', _this.state.city);
+                        shelter.set('email', _this.state.email);
+                        shelter.set('location', location);
+                        shelter.save(null, {success: function () {
+                            _this.setState({
+                                sentShelter: true
+                            });
+                        },})
+                    }
                 });
-                console.log('shelter HAS SENT->', shelter);
-            },
-
-        }, {
-            error: function (error) {
-                console.log(error);
             }
         });
+    };
+
+    // add shelters
+    addShelter = ()=> {
+        if (this.props.params.id) {
+            this.updateShelter();
+        } else {
+            var _this = this;
+            var location = new Parse.GeoPoint({
+                latitude: parseFloat(this.state.latitude),
+                longitude: parseFloat(this.state.longitude)
+            });
+            var ShelterClass = Parse.Object.extend('Shelter');
+            var shelter = new ShelterClass();
+
+            shelter.set('title', this.state.title);
+            shelter.set('phone', this.state.phone);
+            shelter.set('address', this.state.address);
+            shelter.set('city', this.state.city);
+            shelter.set('email', this.state.email);
+            shelter.set('location', location);
+
+            // save and send data to Parse
+            shelter.save(null, {
+                success: function () {
+                    _this.setState({
+                        sentShelter: true
+                    });
+                },
+
+            }, {
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+        }
 
     };
 
 
     render() {
+
         if (this.state.sentShelter) {
-            var shelterConfirm = <ShelterConfirm/>
+            var shelterConfirm = <ShelterConfirm message={this.state.message}/>
         }
         return (
             <div className="container-fluid">
@@ -178,7 +216,8 @@ export default class AddShelter extends Component {
                     </div>
                     <div className="row">
                         <div className="col-md-12">
-                            <button onClick={this.addShelter} className="btn btn-default">{this.state.buttTitle}</button>
+                            <button onClick={this.addShelter}
+                                    className="btn btn-default">{this.state.buttTitle}</button>
                         </div>
                     </div>
                 </div>

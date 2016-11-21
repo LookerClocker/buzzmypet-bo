@@ -31,7 +31,7 @@ export default class AddShelterConfirm extends Component {
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                 >
-                    The new shelter has been added successfully!
+                    {this.props.message}
                 </Dialog>
             </div>
         );
