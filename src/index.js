@@ -17,6 +17,7 @@ ReactDOM.render(
             <Route path='pets' component={ Pets }/>
             <Route path='shelters' component={ Shelters }/>
             <Route path='new_shelter' component={ NewShelter }/>
+            <Route path='edit_shelters/:id' component={ NewShelter }/>
         </Route>
 
     </Router>,

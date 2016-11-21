@@ -15,3 +15,17 @@ body {
   position: relative;
   top: 43px;
 }
+
+.inp-margin {
+  margin: 10px 0;
+}
+
+.main-div {
+  width: 80%;
+  padding: 2%;
+}
+
+.total-shelters {
+  position: absolute;
+  padding: 1% 0 0 2px;
+}

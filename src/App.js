@@ -54,12 +54,11 @@ export default class App extends Component {
     handleCloseUsers = () =>this.setState({open: false, path: 'users'});
     handleClosePets = () =>this.setState({open: false, path: 'pets'});
 
-
     render() {
         return (
             <div>
                 <AppBar
-                    title='BuzzMyPet BO'
+                    title='Buzz My Pet Back office'
                     onTitleTouchTap={this.handleToggle}
                     onLeftIconButtonTouchTap={this.handleToggle}
                     iconElementRight={<Push pointers={this.state.pointers} path={this.state.path}/>}

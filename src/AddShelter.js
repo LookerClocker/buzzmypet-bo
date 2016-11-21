@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import TextField from 'material-ui/TextField';
 var Parse = require('parse').Parse;
 var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
 var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
 var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
-
 import ShelterConfirm from './SuccessDialog'
 
 Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
@@ -13,24 +11,57 @@ export default class AddShelter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            title:'',
-            phone:'',
-            address:'',
-            city:'',
-            email:'',
-            latitude:'',
-            longitude:'',
-            sentShelter: false
+            title: '',
+            phone: '',
+            address: '',
+            city: '',
+            email: '',
+            latitude: '',
+            longitude: '',
+            sentShelter: false,
+            buttTitle: 'Add shelter'
         }
     }
 
     componentDidMount() {
+        var _this = this;
+        if (this.props.params.id) {
+            this.getShelter(function (item) {
+                _this.setState({
+                    buttTitle: 'Save changes',
+                    title: item.get('title'),
+                    phone: item.get('phone'),
+                    address: item.get('address'),
+                    city: item.get('city'),
+                    email: item.get('email'),
+                    latitude: item.get('location')._latitude.toString(),
+                    longitude: item.get('location').longitude.toString(),
+                })
+            });
+        }
+    };
 
+    getShelter = (callback)=> {
+        var query = new Parse.Query('Shelter');
+        query.limit(1000);
+        query.equalTo('objectId', this.props.params.id);
+        query.first({
+            success: function (item) {
+                callback(item);
+            },
+            error: function (error) {
+                console.error('getShelters() error', error);
+                callback(null, error);
+            }
+        });
     };
 
     addShelter = ()=> {
         var _this = this;
-        var location = new Parse.GeoPoint({latitude: parseFloat(this.state.latitude), longitude: parseFloat(this.state.longitude)});
+        var location = new Parse.GeoPoint({
+            latitude: parseFloat(this.state.latitude),
+            longitude: parseFloat(this.state.longitude)
+        });
         var ShelterClass = Parse.Object.extend('Shelter');
         var shelter = new ShelterClass();
 
@@ -58,97 +89,100 @@ export default class AddShelter extends Component {
 
     };
 
-    render() {
 
+    render() {
         if (this.state.sentShelter) {
             var shelterConfirm = <ShelterConfirm/>
         }
-
         return (
             <div className="container-fluid">
                 {shelterConfirm}
-                <div className="row">
-                    <div className="col-md-6">
-                        <TextField
-                            ref='title'
-                            hintText="title"
-                            floatingLabelText="Title"
-                            value={this.state.title}
-                            onChange={e=> this.setState({title: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
+                <div className="main-div">
+                    <div className="row">
+                        <div className="col-md-4">
+                            <label for="title">Title</label>
+                            <input
+                                id="title"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.title}
+                                onChange={e=> this.setState({title: e.target.value})}>
+                            </input>
+                        </div>
+                        <div className="col-md-4">
+                            <label for="phone">Phone</label>
+                            <input
+                                id="phone"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.phone}
+                                onChange={e=> this.setState({phone: e.target.value})}>
+                            </input>
+                        </div>
                     </div>
-                    <div className="col-md-6">
-                        <TextField
-                            ref='phone'
-                            hintText="phone"
-                            floatingLabelText="Phone"
-                            value={this.state.phone}
-                            onChange={e=> this.setState({phone: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <label for="phone">Address</label>
+                            <input
+                                id="address"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.address}
+                                onChange={e=> this.setState({address: e.target.value})}>
+                            </input>
+                        </div>
+                        <div className="col-md-4">
+                            <label for="city">City</label>
+                            <input
+                                id="city"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.city}
+                                onChange={e=> this.setState({city: e.target.value})}>
+                            </input>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <TextField
-                            ref='address'
-                            hintText="address"
-                            floatingLabelText="Address"
-                            value={this.state.address}
-                            onChange={e=> this.setState({address: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <label for="phone">Latitude</label>
+                            <input
+                                id="lat"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.latitude}
+                                onChange={e=> this.setState({latitude: e.target.value})}>
+                            </input>
+                        </div>
+                        <div className="col-md-4">
+                            <label for="long">Longitude</label>
+                            <input
+                                id="long"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.longitude}
+                                onChange={e=> this.setState({longitude: e.target.value})}>
+                            </input>
+                        </div>
                     </div>
-                    <div className="col-md-6">
-                        <TextField
-                            ref='city'
-                            hintText="city"
-                            floatingLabelText="City"
-                            value={this.state.city}
-                            onChange={e=> this.setState({city: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <label for="email">Email</label>
+                            <input
+                                id="email"
+                                className="form-control inp-margin"
+                                type="text"
+                                value={this.state.email}
+                                onChange={e=> this.setState({email: e.target.value})}>
+                            </input>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <TextField
-                            ref='latitude'
-                            hintText="latitude"
-                            floatingLabelText="Latitude"
-                            value={this.state.latitude}
-                            onChange={e=> this.setState({latitude: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <button onClick={this.addShelter} className="btn btn-default">{this.state.buttTitle}</button>
+                        </div>
                     </div>
-                    <div className="col-md-6">
-                        <TextField
-                            ref='longitude'
-                            hintText="longitude"
-                            floatingLabelText="Longitude"
-                            value={this.state.longitude}
-                            onChange={e=> this.setState({longitude: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <TextField
-                            ref='email'
-                            hintText="email"
-                            floatingLabelText="Email"
-                            value={this.state.email}
-                            onChange={e=> this.setState({email: e.target.value})}>
-                            <input type="text"/>
-                        </TextField>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12"><button onClick={this.addShelter} className="btn btn-default">Add</button></div>
                 </div>
             </div>
         )
     }
-}
+};

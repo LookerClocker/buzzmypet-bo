@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
-
 import {Toolbar, Data, Filters} from 'react-data-grid/addons';
-
 import {Link} from 'react-router'
-
+import LinkToShelters from './LinkToShelter'
 var Selectors = Data.Selectors;
-
 var Parse = require('parse').Parse;
 var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
 var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
@@ -57,7 +54,14 @@ var columns = [
         filterRenderer: Filters.NumericFilter,
         filterable: true,
         editable: true
-    }
+    },
+    {
+        key: 'shelter',
+        name: 'Edit',
+        sortable: true,
+        formatter: LinkToShelters,
+        getRowMetaData: (row) => row.id
+    },
 ];
 
 export default class Shelters extends Component {
@@ -98,6 +102,7 @@ export default class Shelters extends Component {
     fullFill=(object)=>{
         return object.map(function (shelter) {
             return {
+                id: shelter.id,
                 title: shelter.get('title'),
                 createdAt: shelter.get('createdAt').toLocaleDateString(),
                 address: shelter.get('address') ? shelter.get('address') : '',
@@ -145,9 +150,10 @@ export default class Shelters extends Component {
     render() {
         return (
             <div>
+                <div className="total-shelters"><strong>Total shelters:{this.getRows().length}</strong></div>
                 <Link to="new_shelter"><button className="btn btn-default add_shelter">Add shelter</button></Link>
                 <ReactDataGrid
-                    enableCellSelect={true}
+                    enableCell Select={true}
                     onGridSort={this.handleGridSort}
                     columns={columns}
                     rowGetter={this.rowGetter}

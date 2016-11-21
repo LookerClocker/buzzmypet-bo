@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {Link} from 'react-router'
 
 export default class AddShelterConfirm extends Component {
     state = {
