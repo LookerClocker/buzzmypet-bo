@@ -64,7 +64,8 @@ var columns = [
         sortable: true,
         filterable: true,
         filterRenderer: Filters.NumericFilter,
-        editable: true
+        editable: true,
+        width:100
     },
     {
         key: 'birthDate',
@@ -80,14 +81,16 @@ var columns = [
         sortable: true,
         filterable: true,
         filterRenderer: Filters.NumericFilter,
-        editable: true
+        editable: true,
+        width:140
     },
     {
         key: 'gender',
         name: 'Gender',
         sortable: true,
         filterable: true,
-        editable: true
+        editable: true,
+        width:70
     },
     {
         key: 'pets',
@@ -177,24 +180,27 @@ export default class UsersTable extends Component {
         this.setState({filters: {}});
     };
 
-    // CALCULATE AGE FROM BIRTH DATE
-    getAge = (born, now) => {
-        var birthday = new Date(now.getFullYear(), born.getMonth(), born.getDate());
-        if (now >= birthday)
-            return now.getFullYear() - born.getFullYear() + ' years';
-        else
-            return now.getFullYear() - born.getFullYear() - 1 + ' years';
-    };
+    //CALCULATE AGE FROM BIRTH DATE
+    calculateAge(birthMonth, birthDay, birthYear)
+    {
+        var todayDate = new Date();
+        var todayYear = todayDate.getFullYear();
+        var todayMonth = todayDate.getMonth();
+        var todayDay = todayDate.getDate();
+        var age = todayYear - birthYear;
 
-    calculateAge = (date)=> {
-        var dob = date;
-        var now = new Date();
-        var birthdate = dob.split('/');
-        var born = new Date(birthdate[2], birthdate[1] - 1, birthdate[0]);
-        var age = this.getAge(born, now);
+        if (todayMonth < birthMonth - 1)
+        {
+            age--;
+        }
 
+        if (birthMonth - 1 == todayMonth && todayDay < birthDay)
+        {
+            age--;
+        }
         return age;
     };
+
 
     // FULLFILL USER`S ARRAY
     fullFill = (object)=> {
@@ -207,13 +213,13 @@ export default class UsersTable extends Component {
                 city: user.get('city'),
                 email: user.get('email'),
                 phoneNo: user.get('phoneNo') ? user.get('phoneNo') : ' ',
-                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').toLocaleDateString()) : '',
+                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').getMonth(),user.get('birthday').getDate(),user.get('birthday').getFullYear()) : '',
                 gender: user.get('gender') == 0 ? 'male' : user.get('gender') == 1 ? 'female' : '',
                 pets: user.get('pets') ? user.get('pets').map(function (pet) {
                     return pet.get('breed');
                 }).join(', ') : ' ',
-                registrationDate: user.createdAt.toLocaleDateString(),
-                birthDate: user.get('birthday')? user.get('birthday') .toLocaleDateString() : '',
+                registrationDate: user.createdAt.toISOString().substring(0, 10),
+                birthDate: user.get('birthday')? user.get('birthday') .toISOString().substring(0, 10) : '',
             }
         });
     };

@@ -32,3 +32,9 @@ body {
 html {
   overflow-y: hidden;
 }
+
+.glyph {
+  position: absolute;
+  top: 29px;
+  cursor: pointer;
+}

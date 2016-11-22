@@ -9,6 +9,8 @@ var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
 var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
 var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
 
+import PubSub from 'pubsub-js';
+
 Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
 
 var columns = [
@@ -53,14 +55,16 @@ var columns = [
         sortable: true,
         filterRenderer: Filters.NumericFilter,
         filterable: true,
-        editable: true
+        editable: true,
+        width:100
     },
     {
         key: 'shelter',
         name: 'Edit',
         sortable: true,
         formatter: LinkToShelters,
-        getRowMetaData: (row) => row.id
+        getRowMetaData: (row) => row.id,
+        width:60
     },
 ];
 
@@ -104,7 +108,7 @@ export default class Shelters extends Component {
             return {
                 id: shelter.id,
                 title: shelter.get('title'),
-                createdAt: shelter.get('createdAt').toLocaleDateString(),
+                createdAt: shelter.get('createdAt').toISOString().substring(0, 10),
                 address: shelter.get('address') ? shelter.get('address') : '',
                 phone: shelter.get('phone') ? shelter.get('phone') : '',
                 city: shelter.get('city') ? shelter.get('city') : '',
@@ -148,6 +152,7 @@ export default class Shelters extends Component {
     };
 
     render() {
+        PubSub.publish('rows', this.getRows());
         return (
             <div>
                 <div className="total-shelters"><strong>Total shelters:{this.getRows().length}</strong></div>
