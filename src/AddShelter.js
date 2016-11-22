@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
-var Parse = require('parse').Parse;
-var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
-var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
-var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
 import ShelterConfirm from './SuccessDialog'
-
-Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
+var Parse = require('parse').Parse;
 
 export default class AddShelter extends Component {
     constructor(props) {

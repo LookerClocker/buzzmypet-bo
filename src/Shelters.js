@@ -4,14 +4,8 @@ import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 import {Link} from 'react-router'
 import LinkToShelters from './LinkToShelter'
 var Selectors = Data.Selectors;
-var Parse = require('parse').Parse;
-var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
-var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
-var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
-
 import PubSub from 'pubsub-js';
-
-Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
+var Parse = require('parse').Parse;
 
 var columns = [
     {

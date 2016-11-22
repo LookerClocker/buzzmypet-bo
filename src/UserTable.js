@@ -1,18 +1,9 @@
 import React, {Component} from 'react';
 import ReactDataGrid from 'react-data-grid';
-
 import PubSub from 'pubsub-js';
-
 import {Toolbar, Data, Filters} from 'react-data-grid/addons';
-
 var Selectors = Data.Selectors;
-
 var Parse = require('parse').Parse;
-var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
-var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
-var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
-
-Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
 
 var columns = [
     {
@@ -207,6 +198,7 @@ export default class UsersTable extends Component {
         var _this = this;
         return object.map(function (user) {
             return {
+                id: user.id,
                 name: user.get('name'),
                 userName: user.get('username'),
                 lastName: user.get('lastName'),

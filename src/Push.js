@@ -3,22 +3,16 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField'
 import SnackBar from './Snackbar'
-
-var Parse = require('parse').Parse;
-var parseApplicationId = 'OeSDM2dUt2TIT97ywwU0gIxUkp9qhXP2wrJgLaXa';
-var parseJavaScriptKey = 'o5xVoA2ijwywj1FueOyZuocgMVqzW3Zt73mPA4LX';
-var parseMasterKey = 'LLsfJljO4HHCCZktxpgVsCLeF8fQJB1Gw5UqqHjL';
-
-Parse.initialize(parseApplicationId, parseJavaScriptKey, parseMasterKey);
-
 var snackbar = '';
+var Parse = require('parse').Parse;
 
 export default class Push extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            message: ''
+            message: '',
+            url: ''
         };
     };
 
@@ -31,7 +25,7 @@ export default class Push extends Component {
             return user.id;
         });
 
-        Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message}).then(function (success) {
+        Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message, url: this.state.url}).then(function (success) {
             snackbar = <SnackBar/>;
             console.log(success);
         }, function (error) {
@@ -40,6 +34,7 @@ export default class Push extends Component {
 
         this.setState({
             message: '',
+            url: '',
             open: false
         });
     };
@@ -75,7 +70,6 @@ export default class Push extends Component {
                 onTouchTap={this.handleSend}
             />
         ];
-
         return (
             <div>
                 {pushButton}
@@ -86,8 +80,19 @@ export default class Push extends Component {
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                 >
-                    <TextField id="message" style={styles.textFields} value={this.state.message}
-                               onChange={e => this.setState({message: e.target.value})}
+                    <TextField
+                        hintText="Message"
+                        floatingLabelText="Type message"
+                        id="message"
+                        style={styles.textFields} value={this.state.message}
+                        onChange={e => this.setState({message: e.target.value})}
+                    />
+                    <TextField
+                        hintText="url"
+                        floatingLabelText="Type url"
+                        id="url"
+                        value={this.state.url}
+                        onChange={e => this.setState({url: e.target.value})}
                     />
                 </Dialog>
 
