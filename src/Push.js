@@ -3,7 +3,6 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField'
 import SnackBar from './Snackbar'
-var snackbar = '';
 var Parse = require('parse').Parse;
 
 export default class Push extends Component {
@@ -12,7 +11,8 @@ export default class Push extends Component {
         this.state = {
             open: false,
             message: '',
-            url: ''
+            url: '',
+            snackbar: ''
         };
     };
 
@@ -21,12 +21,13 @@ export default class Push extends Component {
     };
 
     handleSend = () => {
+        var _this = this;
         var data = this.props.pointers.map(function (user) {
             return user.id;
         });
 
         Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message, url: this.state.url}).then(function (success) {
-            snackbar = <SnackBar/>;
+            _this.setState({snackbar: <SnackBar/>});
             console.log(success);
         }, function (error) {
             console.log(error);
@@ -35,7 +36,8 @@ export default class Push extends Component {
         this.setState({
             message: '',
             url: '',
-            open: false
+            open: false,
+            snackbar: ''
         });
     };
 
@@ -96,7 +98,7 @@ export default class Push extends Component {
                     />
                 </Dialog>
 
-                {snackbar}
+                {this.state.snackbar}
 
             </div>
         )
