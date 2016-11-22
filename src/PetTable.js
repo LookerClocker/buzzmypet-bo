@@ -62,7 +62,8 @@ export default class PetsTable extends Component {
             filters: {},
             sortColumn: null,
             sortDirection: null,
-            height:window.innerHeight
+            height:window.innerHeight,
+            lastSegment: window.location.href.split('/').pop()
 
         };
     };

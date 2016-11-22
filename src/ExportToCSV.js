@@ -70,9 +70,13 @@ export default class ExportToCSV extends Component {
             },
 
         };
+        var csv = '';
+        (this.props.path == 'users' || this.props.path == 'pets' ||  this.props.path == 'shelters')
+            ? csv = <FlatButton style={styles.title} label='download CSV' onClick={this.toCSV}/>
+            : '';
         return (
             <div>
-                <FlatButton style={styles.title} label='download CSV' onClick={this.toCSV}/>
+                {csv}
             </div>
         )
     }

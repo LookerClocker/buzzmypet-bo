@@ -21,7 +21,8 @@ export default class App extends Component {
         this.state = {
             open: false,
             path: 'pets',
-            pointers: []
+            pointers: [],
+            title: 'Buzz My Pet back office / '
         };
     };
 
@@ -50,27 +51,29 @@ export default class App extends Component {
     };
 
     handleToggle = () => this.setState({open: !this.state.open});
-
-    handleCloseUsers = () =>this.setState({open: false, path: 'users'});
-    handleClosePets = () =>this.setState({open: false, path: 'pets'});
+    handleClose = () =>this.setState({open: false});
 
     render() {
+        var segment = window.location.href.split('/').pop();
+        (window.location.href.split('/')[3] == 'edit_shelters')
+            ? segment = 'edit shelter'
+            : segment = window.location.href.split('/').pop();
         return (
             <div>
                 <AppBar
-                    title='Buzz My Pet Back office'
+                    title={this.state.title + ' '+ segment}
                     onTitleTouchTap={this.handleToggle}
                     onLeftIconButtonTouchTap={this.handleToggle}
-                    iconElementRight={<Push pointers={this.state.pointers} path={this.state.path}/>}
-                    children={<CSV path={this.state.path}/>}
+                    iconElementRight={<Push pointers={this.state.pointers} path={segment}/>}
+                    children={<CSV path={segment}/>}
                 />
                 <LeftNav
                     docked={false}
                     open={this.state.open}
                     onRequestChange={(open) => this.setState({open})}>
-                    <Link onTouchTap={this.handleCloseUsers} to='/users'><MenuItem>Users</MenuItem></Link>
-                    <Link onTouchTap={this.handleClosePets} to='/pets'><MenuItem>Pets</MenuItem></Link>
-                    <Link onTouchTap={this.handleClosePets} to='/shelters'><MenuItem>Shelters</MenuItem></Link>
+                    <Link onTouchTap={this.handleClose} to='/users'><MenuItem>Users</MenuItem></Link>
+                    <Link onTouchTap={this.handleClose} to='/pets'><MenuItem>Pets</MenuItem></Link>
+                    <Link onTouchTap={this.handleClose} to='/shelters'><MenuItem>Shelters</MenuItem></Link>
                 </LeftNav>
                 {this.props.children}
             </div>

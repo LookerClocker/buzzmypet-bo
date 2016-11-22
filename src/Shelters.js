@@ -47,7 +47,8 @@ var columns = [
         name: 'Email',
         sortable: true,
         filterable: true,
-        editable: true
+        editable: true,
+        width:150
     },
     {
         key: 'createdAt',
@@ -56,7 +57,7 @@ var columns = [
         filterRenderer: Filters.NumericFilter,
         filterable: true,
         editable: true,
-        width:100
+        width:150
     },
     {
         key: 'shelter',
