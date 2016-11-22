@@ -56,7 +56,7 @@ var columns = [
         filterable: true,
         filterRenderer: Filters.NumericFilter,
         editable: true,
-        width:100
+        width: 100
     },
     {
         key: 'birthDate',
@@ -73,7 +73,7 @@ var columns = [
         filterable: true,
         filterRenderer: Filters.NumericFilter,
         editable: true,
-        width:140
+        width: 140
     },
     {
         key: 'gender',
@@ -81,7 +81,7 @@ var columns = [
         sortable: true,
         filterable: true,
         editable: true,
-        width:70
+        width: 70
     },
     {
         key: 'pets',
@@ -101,7 +101,8 @@ export default class UsersTable extends Component {
             filters: {},
             sortColumn: null,
             sortDirection: null,
-            height:window.innerHeight
+            height: window.innerHeight,
+            nextClick: 0
         };
     };
 
@@ -119,22 +120,55 @@ export default class UsersTable extends Component {
     // GET USERS FROM PARSE.COM
     getUsers(callback) {
         var _this = this;
-
         var query = new Parse.Query('User');
-        query.limit(10000);
+        query.limit(500);
+        query.skip(this.state.nextClick);
         query.include('pets');
         query.find({
             success: function (users) {
                 _this.setState({
                     usersList: _this.fullFill(users),
                     rows: _this.fullFill(users)
-            });
+                });
                 callback(users);
             },
             error: function (error) {
                 console.error('getUser() error', error);
                 callback(null, error);
             }
+        });
+    };
+
+    clickNext = ()=> {
+        var _this = this;
+        if (this.state.nextClick > this.state.usersList.length) {
+            return;
+        }
+        this.setState({
+            nextClick: this.state.nextClick += 500
+        });
+
+        this.getUsers(function (items) {
+            _this.setState({
+                usersList: items,
+                rows: this.state.usersList
+            });
+        });
+    };
+
+    clickBack = ()=> {
+        var _this = this;
+        if (this.state.nextClick == 0) {
+            return;
+        }
+        this.setState({
+            nextClick: this.state.nextClick -= 500
+        });
+        this.getUsers(function (items) {
+            _this.setState({
+                usersList: items,
+                rows: this.state.usersList
+            });
         });
     };
 
@@ -172,21 +206,18 @@ export default class UsersTable extends Component {
     };
 
     //CALCULATE AGE FROM BIRTH DATE
-    calculateAge(birthMonth, birthDay, birthYear)
-    {
+    calculateAge(birthMonth, birthDay, birthYear) {
         var todayDate = new Date();
         var todayYear = todayDate.getFullYear();
         var todayMonth = todayDate.getMonth();
         var todayDay = todayDate.getDate();
         var age = todayYear - birthYear;
 
-        if (todayMonth < birthMonth - 1)
-        {
+        if (todayMonth < birthMonth - 1) {
             age--;
         }
 
-        if (birthMonth - 1 == todayMonth && todayDay < birthDay)
-        {
+        if (birthMonth - 1 == todayMonth && todayDay < birthDay) {
             age--;
         }
         return age;
@@ -205,13 +236,13 @@ export default class UsersTable extends Component {
                 city: user.get('city'),
                 email: user.get('email'),
                 phoneNo: user.get('phoneNo') ? user.get('phoneNo') : ' ',
-                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').getMonth(),user.get('birthday').getDate(),user.get('birthday').getFullYear()) : '',
+                birthday: user.get('birthday') ? _this.calculateAge(user.get('birthday').getMonth(), user.get('birthday').getDate(), user.get('birthday').getFullYear()) : '',
                 gender: user.get('gender') == 0 ? 'male' : user.get('gender') == 1 ? 'female' : '',
                 pets: user.get('pets') ? user.get('pets').map(function (pet) {
                     return pet.get('breed');
                 }).join(', ') : ' ',
                 registrationDate: user.createdAt.toISOString().substring(0, 10),
-                birthDate: user.get('birthday')? user.get('birthday') .toISOString().substring(0, 10) : '',
+                birthDate: user.get('birthday') ? user.get('birthday').toISOString().substring(0, 10) : '',
             }
         });
     };
@@ -220,7 +251,22 @@ export default class UsersTable extends Component {
         PubSub.publish('rows', this.getRows());
         return (
             <div>
-                <strong className="total">Total users: {this.getRows().length}</strong>
+                <div className="row">
+                    <div className="col-md-2">
+                        <strong className="total">Total users: {this.getRows().length}</strong>
+                    </div>
+                    <div className="col-sm-offset-4 col-sm-3 col-md-offset-7 col-md-1 text-center">
+                        <button onClick={this.clickBack} className="btn btn-default glyph">
+                            <div className="glyphicon glyphicon-menu-left"></div>
+                            Prev.
+                        </button>
+                    </div>
+                    <div className="col-sm-3 col-md-1">
+                        <button onClick={this.clickNext} className="btn btn-default glyph">Next
+                            <div className="glyphicon glyphicon-menu-right"></div>
+                        </button>
+                    </div>
+                </div>
                 <ReactDataGrid
                     enableCellSelect={true}
                     onGridSort={this.handleGridSort}

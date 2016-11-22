@@ -53,7 +53,8 @@ export default class PetsTable extends Component {
             sortColumn: null,
             sortDirection: null,
             height:window.innerHeight,
-            lastSegment: window.location.href.split('/').pop()
+            lastSegment: window.location.href.split('/').pop(),
+            nextClick: 0
 
         };
     };
@@ -74,7 +75,8 @@ export default class PetsTable extends Component {
         var _this = this;
 
         var query = new Parse.Query('Pet');
-        query.limit(1000);
+        query.limit(500);
+        query.skip(this.state.nextClick);
         query.include('user');
         query.find({
             success: function (pets) {
@@ -88,6 +90,34 @@ export default class PetsTable extends Component {
                 console.error('getPets() error', error);
                 callback(null, error);
             }
+        });
+    };
+
+    clickNext=()=>{
+        var _this = this;
+        this.setState({
+            nextClick: this.state.nextClick+=500
+        });
+
+        this.getPets(function (items) {
+            _this.setState({
+                petsList: items,
+                rows: this.state.petsList
+            });
+        });
+    };
+
+    clickBack=()=>{
+        var _this = this;
+        if(this.state.nextClick == 0) {return;}
+        this.setState({
+            nextClick: this.state.nextClick-=500
+        });
+        this.getPets(function (items) {
+            _this.setState({
+                petsList: items,
+                rows: this.state.petsList
+            });
         });
     };
 
@@ -141,7 +171,17 @@ export default class PetsTable extends Component {
         PubSub.publish('rows', this.getRows());
         return (
             <div>
-                <strong className="total">Total pets: {this.getRows().length}</strong>
+                <div className="row">
+                    <div className="col-md-2">
+                        <strong className="total">Total pets: {this.getRows().length}</strong>
+                    </div>
+                    <div className="col-sm-offset-4 col-sm-3 col-md-offset-7 col-md-1 text-center">
+                        <button onClick={this.clickBack} className="btn btn-default glyph"><div className="glyphicon glyphicon-menu-left"></div>Prev.</button>
+                    </div>
+                    <div className="col-sm-3 col-md-1">
+                        <button onClick={this.clickNext} className="btn btn-default glyph">Next<div className="glyphicon glyphicon-menu-right"></div></button>
+                    </div>
+                </div>
                 <ReactDataGrid
                     enableCellSelect={true}
                     onGridSort={this.handleGridSort}
