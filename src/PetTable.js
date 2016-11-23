@@ -75,7 +75,8 @@ export default class PetsTable extends Component {
         var query = new Parse.Query('Pet');
         query.count().then(function (number) {
             query.limit(1000);
-            query.ascending('createdAt');
+            query.skip(0);
+            query.addAscending('createdAt');
             var allObj=[];
             query.include('user');
 

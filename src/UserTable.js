@@ -123,7 +123,7 @@ export default class UsersTable extends Component {
         query.count().then(function (number) {
             query.limit(1000);
             query.skip(0);
-            query.ascending('createdAt');
+            query.addAscending('createdAt');
             query.include('pets');
             var allObj=[];
 
@@ -201,6 +201,7 @@ export default class UsersTable extends Component {
         return object.map(function (user) {
             return {
                 id: user.id,
+                createdAt: user.createdAt,
                 name: user.get('name'),
                 userName: user.get('username'),
                 lastName: user.get('lastName'),
