@@ -56,7 +56,7 @@ var columns = [
         filterable: true,
         filterRenderer: Filters.NumericFilter,
         editable: true,
-        width: 100
+        width: 80
     },
     {
         key: 'birthDate',
@@ -73,7 +73,7 @@ var columns = [
         filterable: true,
         filterRenderer: Filters.NumericFilter,
         editable: true,
-        width: 140
+        width: 130
     },
     {
         key: 'gender',
@@ -101,8 +101,7 @@ export default class UsersTable extends Component {
             filters: {},
             sortColumn: null,
             sortDirection: null,
-            height: window.innerHeight,
-            nextClick: 0
+            height: window.innerHeight
         };
     };
 
@@ -121,55 +120,27 @@ export default class UsersTable extends Component {
     getUsers(callback) {
         var _this = this;
         var query = new Parse.Query('User');
-        query.limit(500);
-        query.skip(this.state.nextClick);
-        query.include('pets');
-        query.find({
-            success: function (users) {
-                _this.setState({
-                    usersList: _this.fullFill(users),
-                    rows: _this.fullFill(users)
+        query.count().then(function (number) {
+            query.limit(1000);
+            query.skip(0);
+            query.ascending('createdAt');
+            query.include('pets');
+            var allObj=[];
+
+            for(var i=0; i<=number; i+=1000) {
+                query.skip(i);
+                query.find().then(function (users) {
+                    allObj = allObj.concat(_this.fullFill(users));
+                    _this.setState({
+                        usersList: allObj,
+                        rows: allObj
+                    });
+                    callback(users);
                 });
-                callback(users);
-            },
-            error: function (error) {
-                console.error('getUser() error', error);
-                callback(null, error);
             }
-        });
-    };
-
-    clickNext = ()=> {
-        var _this = this;
-        if (this.state.nextClick > this.state.usersList.length) {
-            return;
-        }
-        this.setState({
-            nextClick: this.state.nextClick += 500
+            console.log(number);
         });
 
-        this.getUsers(function (items) {
-            _this.setState({
-                usersList: items,
-                rows: this.state.usersList
-            });
-        });
-    };
-
-    clickBack = ()=> {
-        var _this = this;
-        if (this.state.nextClick == 0) {
-            return;
-        }
-        this.setState({
-            nextClick: this.state.nextClick -= 500
-        });
-        this.getUsers(function (items) {
-            _this.setState({
-                usersList: items,
-                rows: this.state.usersList
-            });
-        });
     };
 
     // REACT DATA GRID BUILD-IN METHODS
@@ -220,7 +191,7 @@ export default class UsersTable extends Component {
         if (birthMonth - 1 == todayMonth && todayDay < birthDay) {
             age--;
         }
-        return age;
+        return age + ' years';
     };
 
 
@@ -254,17 +225,6 @@ export default class UsersTable extends Component {
                 <div className="row">
                     <div className="col-md-2">
                         <strong className="total">Total users: {this.getRows().length}</strong>
-                    </div>
-                    <div className="col-sm-offset-4 col-sm-3 col-md-offset-7 col-md-1 text-center">
-                        <button onClick={this.clickBack} className="btn btn-default glyph">
-                            <div className="glyphicon glyphicon-menu-left"></div>
-                            Prev.
-                        </button>
-                    </div>
-                    <div className="col-sm-3 col-md-1">
-                        <button onClick={this.clickNext} className="btn btn-default glyph">Next
-                            <div className="glyphicon glyphicon-menu-right"></div>
-                        </button>
                     </div>
                 </div>
                 <ReactDataGrid

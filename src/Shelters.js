@@ -87,6 +87,7 @@ export default class Shelters extends Component {
     getShelters=(callback)=> {
         var query = new Parse.Query('Shelter');
         query.limit(1000);
+        query.ascending('createdAt');
         query.find({
             success: function (shelters) {
                 callback(shelters);

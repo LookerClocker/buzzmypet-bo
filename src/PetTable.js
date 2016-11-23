@@ -11,35 +11,35 @@ var columns = [
         name: 'Name',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
         key: 'user',
         name: 'Owner',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
         key: 'breed',
         name: 'Breed',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
         key: 'age',
         name: 'Age',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     },
     {
         key: 'color',
         name: 'Color',
         sortable: true,
         filterable: true,
-        editable : true
+        editable: true
     }
 ];
 
@@ -52,10 +52,9 @@ export default class PetsTable extends Component {
             filters: {},
             sortColumn: null,
             sortDirection: null,
-            height:window.innerHeight,
+            height: window.innerHeight,
             lastSegment: window.location.href.split('/').pop(),
-            nextClick: 0
-
+            nextRows: []
         };
     };
 
@@ -73,51 +72,27 @@ export default class PetsTable extends Component {
     // GET PETS FROM PARSE.COM
     getPets(callback) {
         var _this = this;
-
         var query = new Parse.Query('Pet');
-        query.limit(500);
-        query.skip(this.state.nextClick);
-        query.include('user');
-        query.find({
-            success: function (pets) {
-                _this.setState({
-                    petsList: _this.fullFill(pets),
-                    rows: _this.fullFill(pets)
+        query.count().then(function (number) {
+            query.limit(1000);
+            query.ascending('createdAt');
+            var allObj=[];
+            query.include('user');
+
+            for(var i=0; i<=number; i+=1000) {
+                query.skip(i);
+                query.find().then(function (pets) {
+                    allObj = allObj.concat(_this.fullFill(pets));
+                    _this.setState({
+                        petsList: allObj,
+                        rows: allObj
+                    });
+
+                    callback(pets);
                 });
-                callback(pets);
-            },
-            error: function (error) {
-                console.error('getPets() error', error);
-                callback(null, error);
             }
-        });
-    };
 
-    clickNext=()=>{
-        var _this = this;
-        this.setState({
-            nextClick: this.state.nextClick+=500
-        });
-
-        this.getPets(function (items) {
-            _this.setState({
-                petsList: items,
-                rows: this.state.petsList
-            });
-        });
-    };
-
-    clickBack=()=>{
-        var _this = this;
-        if(this.state.nextClick == 0) {return;}
-        this.setState({
-            nextClick: this.state.nextClick-=500
-        });
-        this.getPets(function (items) {
-            _this.setState({
-                petsList: items,
-                rows: this.state.petsList
-            });
+            console.log(number);
         });
     };
 
@@ -161,7 +136,7 @@ export default class PetsTable extends Component {
                 name: pet.get('name'),
                 user: (pet.get('user')) ? pet.get('user').get('name') : " ",
                 breed: pet.get('breed'),
-                age:  pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
+                age: pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
                 color: pet.get('color')
             }
         });
@@ -169,17 +144,13 @@ export default class PetsTable extends Component {
 
     render() {
         PubSub.publish('rows', this.getRows());
+        // console.log('length',this.state.nextRows.length);
+
         return (
             <div>
                 <div className="row">
                     <div className="col-md-2">
                         <strong className="total">Total pets: {this.getRows().length}</strong>
-                    </div>
-                    <div className="col-sm-offset-4 col-sm-3 col-md-offset-7 col-md-1 text-center">
-                        <button onClick={this.clickBack} className="btn btn-default glyph"><div className="glyphicon glyphicon-menu-left"></div>Prev.</button>
-                    </div>
-                    <div className="col-sm-3 col-md-1">
-                        <button onClick={this.clickNext} className="btn btn-default glyph">Next<div className="glyphicon glyphicon-menu-right"></div></button>
                     </div>
                 </div>
                 <ReactDataGrid
