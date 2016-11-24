@@ -145,13 +145,12 @@ export default class PetsTable extends Component {
 
     render() {
         PubSub.publish('rows', this.getRows());
-        // console.log('length',this.state.nextRows.length);
 
         return (
             <div>
                 <div className="row">
                     <div className="col-md-2">
-                        <strong className="total">Total pets: {this.getRows().length}</strong>
+                        <strong className="total">Total pets: {this.getSize()}</strong>
                     </div>
                 </div>
                 <ReactDataGrid

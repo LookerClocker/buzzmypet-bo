@@ -9,6 +9,7 @@ body {
 .total {
   position: relative;
   top: 34px;
+  left: 10px;
 }
 
 .add_shelter {
@@ -33,8 +34,10 @@ html {
   overflow-y: hidden;
 }
 
-.glyph {
-  position: absolute;
-  top: 29px;
-  cursor: pointer;
+.data-grid-padd {
+  padding: 1%;
+}
+
+.react-grid-Main {
+  padding-left: 2px !important;
 }

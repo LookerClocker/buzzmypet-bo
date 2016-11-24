@@ -5,6 +5,8 @@ import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 var Selectors = Data.Selectors;
 var Parse = require('parse').Parse;
 
+var count = '';
+
 var columns = [
     {
         key: 'name',
@@ -111,7 +113,8 @@ export default class UsersTable extends Component {
         this.getUsers(function (items) {
             _this.setState({
                 usersList: items,
-                rows: this.state.usersList
+                rows: this.state.usersList,
+                count: this.getRows().length
             });
         });
     };
@@ -125,20 +128,19 @@ export default class UsersTable extends Component {
             query.skip(0);
             query.addAscending('createdAt');
             query.include('pets');
-            var allObj=[];
+            var allObj = [];
 
-            for(var i=0; i<=number; i+=1000) {
+            for (var i = 0; i <= number; i += 1000) {
                 query.skip(i);
                 query.find().then(function (users) {
                     allObj = allObj.concat(_this.fullFill(users));
                     _this.setState({
                         usersList: allObj,
-                        rows: allObj
+                        rows: allObj,
                     });
                     callback(users);
                 });
             }
-            console.log(number);
         });
 
     };
@@ -225,7 +227,7 @@ export default class UsersTable extends Component {
             <div>
                 <div className="row">
                     <div className="col-md-2">
-                        <strong className="total">Total users: {this.getRows().length}</strong>
+                        <strong className="total">Total users: {this.getSize()}</strong>
                     </div>
                 </div>
                 <ReactDataGrid
