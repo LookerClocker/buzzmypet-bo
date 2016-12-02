@@ -40,6 +40,13 @@ var columns = [
         sortable: true,
         filterable: true,
         editable: true
+    },
+    {
+        key: 'status',
+        name: 'Status',
+        sortable: true,
+        filterable: true,
+        editable: true
     }
 ];
 
@@ -97,6 +104,38 @@ export default class PetsTable extends Component {
         });
     };
 
+    //GET STATUS FOR PET
+    getStatusForPet(pet) {
+      console.log('getStatusForPet start for pet = ', pet);
+      var _this = this;
+      var query = new Parse.Query('Alert');
+      //query.equalTo('pet', pet)
+      query.find().then(
+        (result) => {
+          return {status: 0};
+          console.log(result);
+          for (var i = 0; i < result.length; i++) {
+            var alert = result[i];
+            console.log('alert = ', alert.get('alertType'));
+            if (alert.get('alertType') == 0) {return {status: 0};}
+            if (alert.get('alertType') == 2) {return {status: 2};}
+            console.log('======');
+          }
+          return {status: 2}
+        }, (error) => {
+          console.log('Error getting getStatusForPet');
+          console.log(error);
+          return {status: 2}
+          //_this.forceUpdate()
+        }
+      )
+    };
+
+    getStatusForPet2(pet) {
+      return {status: 0};
+    };
+
+
     // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
         return Selectors.getRows(this.state);
@@ -132,13 +171,15 @@ export default class PetsTable extends Component {
 
     // FULLFILL USER`S ARRAY
     fullFill = (object)=> {
+      var _this = this;
         return object.map(function (pet) {
             return {
                 name: pet.get('name'),
                 user: (pet.get('user')) ? pet.get('user').get('name') : " ",
                 breed: pet.get('breed'),
                 age: pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
-                color: pet.get('color')
+                color: pet.get('color'),
+                status: _this.getStatusForPet2(pet).status
             }
         });
     };
