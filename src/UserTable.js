@@ -75,7 +75,7 @@ var columns = [
         filterable: true,
         filterRenderer: Filters.NumericFilter,
         editable: true,
-        width: 130
+        width: 150
     },
     {
         key: 'gender',
@@ -83,7 +83,7 @@ var columns = [
         sortable: true,
         filterable: true,
         editable: true,
-        width: 70
+        width: 90
     },
     {
         key: 'pets',
