@@ -133,6 +133,7 @@ export default class UsersTable extends Component {
             for (var i = 0; i <= number; i += 1000) {
                 query.skip(i);
                 query.find().then(function (users) {
+                  console.log("=====");
                     allObj = allObj.concat(_this.fullFill(users));
                     _this.setState({
                         usersList: allObj,

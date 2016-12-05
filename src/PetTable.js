@@ -4,6 +4,7 @@ import PubSub from 'pubsub-js';
 import {Toolbar, Data} from 'react-data-grid/addons';
 var Selectors = Data.Selectors;
 var Parse = require('parse').Parse;
+var _ = require('underscore');
 
 var columns = [
     {
@@ -47,6 +48,20 @@ var columns = [
         sortable: true,
         filterable: true,
         editable: true
+    },
+    {
+        key: 'updated',
+        name: 'UpdatedAt',
+        sortable: true,
+        filterable: true,
+        editable: true
+    },
+    {
+        key: 'id',
+        name: 'Id',
+        sortable: true,
+        filterable: true,
+        editable: true
     }
 ];
 
@@ -68,7 +83,8 @@ export default class PetsTable extends Component {
     componentDidMount() {
         var _this = this;
 
-        this.getPets(function (items) {
+
+        this.getPetsFromAlerts(function (items) {
             _this.setState({
                 petsList: items,
                 rows: this.state.petsList
@@ -104,35 +120,49 @@ export default class PetsTable extends Component {
         });
     };
 
-    //GET STATUS FOR PET
-    getStatusForPet(pet) {
-      console.log('getStatusForPet start for pet = ', pet);
-      var _this = this;
-      var query = new Parse.Query('Alert');
-      //query.equalTo('pet', pet)
-      query.find().then(
-        (result) => {
-          return {status: 0};
-          console.log(result);
-          for (var i = 0; i < result.length; i++) {
-            var alert = result[i];
-            console.log('alert = ', alert.get('alertType'));
-            if (alert.get('alertType') == 0) {return {status: 0};}
-            if (alert.get('alertType') == 2) {return {status: 2};}
-            console.log('======');
-          }
-          return {status: 2}
-        }, (error) => {
-          console.log('Error getting getStatusForPet');
-          console.log(error);
-          return {status: 2}
-          //_this.forceUpdate()
-        }
-      )
+    getPetsFromAlerts(callback) {
+        var _this = this;
+        var query = new Parse.Query('Alert');
+        query.exists('pet');
+        query.include('pet');
+        query.count().then(function (number) {
+            query.limit(1000);
+            query.skip(0);
+            query.addAscending('createdAt');
+            var allObj=[];
+            query.include('user');
+
+            for(var i=0; i<=number; i+=1000) {
+                query.skip(i);
+                query.find().then(function (pets) {
+                  console.log(pets);
+                  var sorted = pets.sort(function(a, b) {
+                    if(a.get('pet').id < b.get('pet').id) return -1;
+                    if(a.get('pet').id > b.get('pet').id) return 1;
+                    return 0;
+                  });
+                  var reversed = sorted.reverse();
+                  var unique = _.unique(reversed,function(d){ return d.get('pet').id});
+                  var final = unique.reverse();
+                  allObj = allObj.concat(_this.fullFill(final));
+                    _this.setState({
+                        petsList: allObj,
+                        rows: allObj
+                    });
+
+                    callback(pets);
+                });
+            }
+
+            console.log(number);
+        });
     };
 
-    getStatusForPet2(pet) {
-      return {status: 0};
+
+    //GET STATUS FOR PET
+    getStatusForPet(alert) {
+      if (alert.get('alertType') == 0) {return {status: 'lost'};}
+      if (alert.get('alertType') == 2) {return {status: 'found'};}
     };
 
 
@@ -172,14 +202,16 @@ export default class PetsTable extends Component {
     // FULLFILL USER`S ARRAY
     fullFill = (object)=> {
       var _this = this;
-        return object.map(function (pet) {
+        return object.map(function (alert) {
             return {
-                name: pet.get('name'),
-                user: (pet.get('user')) ? pet.get('user').get('name') : " ",
-                breed: pet.get('breed'),
-                age: pet.get('age') ? pet.get('age') >= 100 ? Math.round(pet.get('age') / 100) + ' years' : pet.get('age') + ' months' : '',
-                color: pet.get('color'),
-                status: _this.getStatusForPet2(pet).status
+                name: alert.get('pet').get('name'),
+                user: (alert.get('user')) ? alert.get('user').get('name') : " ",
+                breed: alert.get('pet').get('breed'),
+                age: alert.get('pet').get('age') ? alert.get('pet').get('age') >= 100 ? Math.round(alert.get('pet').get('age') / 100) + ' years' : alert.get('pet').get('age') + ' months' : '',
+                color: alert.get('pet').get('color'),
+                status: _this.getStatusForPet(alert).status,
+                id: alert.get('pet').id,
+                updated: alert.createdAt.toISOString().substring(0, 10)
             }
         });
     };

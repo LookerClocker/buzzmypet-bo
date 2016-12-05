@@ -3,70 +3,18 @@ import ReactDataGrid from 'react-data-grid';
 import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 import {Link} from 'react-router'
 import LinkToShelters from './LinkToShelter'
+import LinkToDelete from './LinkToDelete'
 var Selectors = Data.Selectors;
 import PubSub from 'pubsub-js';
 var Parse = require('parse').Parse;
 
-var columns = [
-    {
-        key: 'title',
-        name: 'Title',
-        sortable: true,
-        filterable: true,
-        editable: true
-    },
-    {
-        key: 'address',
-        name: 'Address',
-        sortable: true,
-        filterable: true,
-        editable: true
-    },
-    {
-        key: 'city',
-        name: 'City',
-        sortable: true,
-        filterable: true,
-        editable: true
-    },
-    {
-        key: 'phone',
-        name: 'Phone',
-        sortable: true,
-        filterable: true,
-        editable: true
-    },
-    {
-        key: 'email',
-        name: 'Email',
-        sortable: true,
-        filterable: true,
-        editable: true,
-        width:150
-    },
-    {
-        key: 'createdAt',
-        name: 'Created at',
-        sortable: true,
-        filterRenderer: Filters.NumericFilter,
-        filterable: true,
-        editable: true,
-        width:150
-    },
-    {
-        key: 'shelter',
-        name: 'Edit',
-        sortable: true,
-        formatter: LinkToShelters,
-        getRowMetaData: (row) => row.id,
-        width:60
-    },
-];
+
 
 export default class Shelters extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            parseShelters: [],
             shelters: [],
             rows: [],
             height: window.innerHeight
@@ -78,6 +26,7 @@ export default class Shelters extends Component {
 
         this.getShelters(function (items) {
             _this.setState({
+                parseShelters: items,
                 shelters: _this.fullFill(items),
                 rows: _this.fullFill(items)
             });
@@ -147,6 +96,45 @@ export default class Shelters extends Component {
         this.setState({filters: {}});
     };
 
+    deleteShelter=(id)=> {
+        console.log("deleteShelter!! ", id);
+        var _this = this;
+        console.log(this.getShelterById);
+        var shelter = this.getShelterById(id);
+        console.log(shelter);
+        if (confirm('Are you sure you want to delete user?')) {
+
+          shelter.destroy({
+            success: function(personName) {
+              console.log("success destroy");
+                _this.getShelters(function (items) {
+                  console.log("items new after destroy " , items.length);
+                    _this.setState({
+                        shelters: _this.fullFill(items),
+                        rows: _this.fullFill(items)
+                    });
+                })
+            },
+            error: function(personName, error) {
+              console.log("error destroy");
+
+            }
+
+          });
+        }
+    };
+
+    getShelterById = (id)=> {
+        var shelters = this.state.parseShelters;
+        if (shelters.length == 0) return [];
+
+        for (var i = 0; i < shelters.length; i++) {
+            if (shelters[i].id == id) {
+                return shelters[i];
+            }
+        }
+    };
+
     render() {
         PubSub.publish('rows', this.getRows());
         return (
@@ -156,7 +144,74 @@ export default class Shelters extends Component {
                 <ReactDataGrid
                     enableCellSelect={true}
                     onGridSort={this.handleGridSort}
-                    columns={columns}
+                    columns={[
+                        {
+                            key: 'title',
+                            name: 'Title',
+                            sortable: true,
+                            filterable: true,
+                            editable: true
+                        },
+                        {
+                            key: 'address',
+                            name: 'Address',
+                            sortable: true,
+                            filterable: true,
+                            editable: true
+                        },
+                        {
+                            key: 'city',
+                            name: 'City',
+                            sortable: true,
+                            filterable: true,
+                            editable: true
+                        },
+                        {
+                            key: 'phone',
+                            name: 'Phone',
+                            sortable: true,
+                            filterable: true,
+                            editable: true
+                        },
+                        {
+                            key: 'email',
+                            name: 'Email',
+                            sortable: true,
+                            filterable: true,
+                            editable: true,
+                            width:150
+                        },
+                        {
+                            key: 'createdAt',
+                            name: 'Created at',
+                            sortable: true,
+                            filterRenderer: Filters.NumericFilter,
+                            filterable: true,
+                            editable: true,
+                            width:150
+                        },
+                        {
+                            key: 'shelter',
+                            name: 'Edit',
+                            sortable: true,
+                            formatter: LinkToShelters,
+                            getRowMetaData: (row) => row.id,
+                            width:60
+                        },
+                        {
+                            key: 'shelterDelete',
+                            name: 'Delete',
+                            sortable: true,
+                            formatter: LinkToDelete,
+                            getRowMetaData: (row) => {
+                              return {
+                                id: row.id,
+                                delete: this.deleteShelter
+                              }
+                            },
+                            width:80
+                        },
+                    ]}
                     rowGetter={this.rowGetter}
                     minHeight={this.state.height}
                     rowsCount={this.getSize()}
