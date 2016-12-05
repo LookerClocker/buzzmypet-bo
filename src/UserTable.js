@@ -109,42 +109,63 @@ export default class UsersTable extends Component {
 
     componentDidMount() {
         var _this = this;
-
-        this.getUsers(function (items) {
-            _this.setState({
-                usersList: items,
-                rows: this.state.usersList,
-                count: this.getRows().length
-            });
-        });
+        this.getUsersFromCloudCode();
+        // this.getUsers(function (items) {
+        //     _this.setState({
+        //         usersList: items,
+        //         rows: this.state.usersList,
+        //         count: this.getRows().length
+        //     });
+        // });
     };
+
+
+    //Get All users from cloud code function
+    getUsersFromCloudCode = ()=> {
+      var _this = this;
+      console.log("getUsersFromCloudCode...");
+      Parse.Cloud.run('retrieveAllObjects', {
+        object_type: "User", // REQUIRED - string: name of your Parse class
+        //update_at: moment().toDate(), // OPTIONAL - JS Date object: Only retrieve objects where update_at is higher than...
+        //only_objectId: true|false // OPTIONAL - boolean: the result will only be composed by objectId + date fields, otherwise all attributes are returned.
+      }).then(function(objects) {
+        console.log("+++++++++ success");
+        console.log(objects.length);
+        _this.setState({
+            usersList: _this.fullFill(objects),
+            rows: _this.fullFill(objects),
+            count: _this.getRows().length
+        });
+      });
+    };
+
 
     // GET USERS FROM PARSE.COM
-    getUsers(callback) {
-        var _this = this;
-        var query = new Parse.Query('User');
-        query.count().then(function (number) {
-            query.limit(1000);
-            query.skip(0);
-            query.addAscending('createdAt');
-            query.include('pets');
-            var allObj = [];
-
-            for (var i = 0; i <= number; i += 1000) {
-                query.skip(i);
-                query.find().then(function (users) {
-                  console.log("=====");
-                    allObj = allObj.concat(_this.fullFill(users));
-                    _this.setState({
-                        usersList: allObj,
-                        rows: allObj,
-                    });
-                    callback(users);
-                });
-            }
-        });
-
-    };
+    // getUsers(callback) {
+    //     var _this = this;
+    //     var query = new Parse.Query('User');
+    //     query.count().then(function (number) {
+    //         query.limit(1000);
+    //         query.skip(0);
+    //         query.addAscending('createdAt');
+    //         query.include('pets');
+    //         var allObj = [];
+    //
+    //         for (var i = 0; i <= number; i += 1000) {
+    //             query.skip(i);
+    //             query.find().then(function (users) {
+    //               console.log("=====");
+    //                 allObj = allObj.concat(_this.fullFill(users));
+    //                 _this.setState({
+    //                     usersList: allObj,
+    //                     rows: allObj,
+    //                 });
+    //                 callback(users);
+    //             });
+    //         }
+    //     });
+    //
+    // };
 
     // REACT DATA GRID BUILD-IN METHODS
     getRows = ()=> {
