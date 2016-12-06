@@ -22,9 +22,14 @@ export default class Push extends Component {
 
     handleSend = () => {
         var _this = this;
-        var data = this.props.pointers.map(function (user) {
-            return user.id;
+        var data = this.props.pointers.map(function (object) {
+            return object.userId ? object.userId : object.id; //pets or users
         });
+
+        console.log("handleSend...");
+        console.log(data);
+        console.log(this.state.message);
+        console.log(this.state.url);
 
         Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message, url: this.state.url}).then(function (success) {
             _this.setState({snackbar: <SnackBar/>});
@@ -56,7 +61,7 @@ export default class Push extends Component {
             }
         };
 
-        var pushButton = (this.props.path === 'users') ?
+        var pushButton = (this.props.path === 'users' || this.props.path === 'pets') ?
             <FlatButton label="Push" style={styles.title} onTouchTap={this.handleOpen}/> : '';
 
         const actions = [

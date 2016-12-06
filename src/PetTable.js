@@ -113,9 +113,14 @@ export default class PetsTable extends Component {
         //only_objectId: true|false // OPTIONAL - boolean: the result will only be composed by objectId + date fields, otherwise all attributes are returned.
       }).then(function(pets) {
         console.log("+++++++++ success");
-        console.log(pets.length);
+        console.log(pets);
 
         var sorted = pets.sort(function(a, b) {
+          console.log(a.get('pet'));
+          console.log(b.get('pet'));
+          console.log(a.get('pet').id < b.get('pet').id);
+          console.log(a.get('pet').id > b.get('pet').id);
+
           if(a.get('pet').id < b.get('pet').id) return -1;
           if(a.get('pet').id > b.get('pet').id) return 1;
           return 0;
@@ -137,7 +142,9 @@ export default class PetsTable extends Component {
         for(var i=0; i< allPets.length; i++) {
           for(var j=0; j< allObj.length; j++) {
             if(allPets[i].id  == allObj[j].id) {
+              console.log("equal");
               allPetsTemp.splice(i, 1);
+              console.log("removed");
               clones++;
             }
           }
@@ -307,6 +314,7 @@ export default class PetsTable extends Component {
                 color: alert.get('pet').get('color'),
                 status: _this.getStatusForPet(alert).status,
                 id: alert.get('pet').id,
+                userId: alert.get('user')? alert.get('user').id : "",
                 updated: alert.createdAt.toISOString().substring(0, 10)
             }
         });
@@ -324,6 +332,7 @@ export default class PetsTable extends Component {
                 color: pet.get('color'),
                 status: "new",
                 id: pet.id,
+                userId: pet.get('user')? pet.get('user').id : "",
                 updated: pet.createdAt.toISOString().substring(0, 10)
             }
         });
