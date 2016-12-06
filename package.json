@@ -30,6 +30,7 @@
     "parse": "^1.9.2",
     "react": "15.3.2",
     "react-dom": "15.3.2",
+    "react-loader": "^2.4.0",
     "react-tap-event-plugin": "^1.0.0",
     "url": "^0.11.0"
   },
