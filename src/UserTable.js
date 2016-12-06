@@ -4,6 +4,7 @@ import PubSub from 'pubsub-js';
 import {Toolbar, Data, Filters} from 'react-data-grid/addons';
 var Selectors = Data.Selectors;
 var Parse = require('parse').Parse;
+var Loader = require('react-loader');
 
 var count = '';
 
@@ -27,7 +28,8 @@ var columns = [
         name: 'User Name',
         sortable: true,
         filterable: true,
-        editable: true
+        editable: true,
+        width: 100
     },
 
     {
@@ -103,7 +105,8 @@ export default class UsersTable extends Component {
             filters: {},
             sortColumn: null,
             sortDirection: null,
-            height: window.innerHeight
+            height: window.innerHeight,
+            loaded: false
         };
     };
 
@@ -117,6 +120,10 @@ export default class UsersTable extends Component {
         //         count: this.getRows().length
         //     });
         // });
+    };
+
+    componentWillUnmount() {
+      this.setState({loaded: true});
     };
 
 
@@ -135,7 +142,8 @@ export default class UsersTable extends Component {
         _this.setState({
             usersList: _this.fullFill(objects),
             rows: _this.fullFill(objects),
-            count: _this.getRows().length
+            count: _this.getRows().length,
+            loaded: true
         });
       });
     };
@@ -248,6 +256,7 @@ export default class UsersTable extends Component {
         PubSub.publish('rows', this.getRows());
         return (
             <div>
+            <Loader loaded={this.state.loaded}>
                 <div className="row">
                     <div className="col-md-2">
                         <strong className="total">Total users: {this.getSize()}</strong>
@@ -264,6 +273,7 @@ export default class UsersTable extends Component {
                     onAddFilter={this.handleFilterChange}
                     onClearFilters={this.onClearFilters}
                 />
+            </Loader>
             </div>
 
         )
