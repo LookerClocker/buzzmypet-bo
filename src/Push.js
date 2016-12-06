@@ -34,6 +34,7 @@ export default class Push extends Component {
         Parse.Cloud.run('SendPush', {pointers: data, message: this.state.message, url: this.state.url}).then(function (success) {
             _this.setState({snackbar: <SnackBar/>});
             console.log(success);
+            _this.createEventOnCloudCode(data, _this.state.message, _this.state.url);
         }, function (error) {
             console.log(error);
         });
@@ -45,6 +46,23 @@ export default class Push extends Component {
             snackbar: ''
         });
     };
+
+    //Get All users from cloud code function
+    createEventOnCloudCode = (users, message, url)=> {
+      var _this = this;
+      console.log("createEventOnCloudCode...");
+      Parse.Cloud.run('CreateEvent', {
+        eventType: 4,
+        users: users,
+        pushMessage: message,
+        pushURL: url
+      }).then(function (success) {
+          console.log(success);
+      }, function (error) {
+          console.log(error);
+      });
+    };
+
 
     handleClose = () => {
         this.setState({open: false});
