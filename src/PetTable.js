@@ -104,7 +104,6 @@ export default class PetsTable extends Component {
     //Get PEts from Alerts Collection from cloud code function
     getPetsFromCloudCode = (allPets)=> {
       var _this = this;
-      console.log("getPetsFromCloudCode...");
       Parse.Cloud.run('retrieveAllObjects', {
         object_type: "Alert", // REQUIRED - string: name of your Parse class
         include: ['pet', 'user'],
@@ -112,48 +111,31 @@ export default class PetsTable extends Component {
         //update_at: moment().toDate(), // OPTIONAL - JS Date object: Only retrieve objects where update_at is higher than...
         //only_objectId: true|false // OPTIONAL - boolean: the result will only be composed by objectId + date fields, otherwise all attributes are returned.
       }).then(function(pets) {
-        console.log("+++++++++ success");
-        console.log(pets);
 
         var sorted = pets.sort(function(a, b) {
-          console.log(a.get('pet'));
-          console.log(b.get('pet'));
-          console.log(a.get('pet').id < b.get('pet').id);
-          console.log(a.get('pet').id > b.get('pet').id);
-
           if(a.get('pet').id < b.get('pet').id) return -1;
           if(a.get('pet').id > b.get('pet').id) return 1;
           return 0;
         });
-        console.log("sorted ", sorted.length);
 
         var reversed = sorted.reverse();
-        console.log("reversed: ",reversed.length);
         var unique = _.unique(reversed,function(d){ return d.get('pet').id});
-        console.log("unique: ",unique.length);
         var final = unique.reverse();
         var allObj=[];
         allObj = allObj.concat(_this.fullFill(final));
-        console.log("1) allObj: ",allObj.length);
-        console.log("2) allObj ALL: ",allPets.length);
 
         var allPetsTemp = allPets;
         var clones = 0;
         for(var i=0; i< allPets.length; i++) {
           for(var j=0; j< allObj.length; j++) {
             if(allPets[i].id  == allObj[j].id) {
-              console.log("equal");
               allPetsTemp.splice(i, 1);
-              console.log("removed");
               clones++;
             }
           }
         }
-        console.log("clomnes = ", clones);
-        console.log("2) allPetsTemp: ",allPetsTemp.length);
 
         var concatPets = allPetsTemp.concat(allObj)
-        console.log("concatPets =", concatPets);
 
 
         var sortedConcatedPets = concatPets.sort(function(a, b) {
@@ -162,7 +144,6 @@ export default class PetsTable extends Component {
           return 0;
         });
 
-        console.log("sortedConcatedPets =", sortedConcatedPets);
 
         _this.setState({
           petsList: sortedConcatedPets,
@@ -178,15 +159,12 @@ export default class PetsTable extends Component {
     //Get All pets from PEts Collection from cloud code function
     getAllPetsFromCloudCode = ()=> {
       var _this = this;
-      console.log("getAllPetsFromCloudCode...");
       Parse.Cloud.run('retrieveAllObjects', {
         object_type: 'Pet', // REQUIRED - string: name of your Parse class
         include: ['user']
         //update_at: moment().toDate(), // OPTIONAL - JS Date object: Only retrieve objects where update_at is higher than...
         //only_objectId: true|false // OPTIONAL - boolean: the result will only be composed by objectId + date fields, otherwise all attributes are returned.
       }).then(function(allPets) {
-        console.log("+++++++++ success");
-        console.log("ALL PETS = ", allPets.length);
         var allObj=[];
         allObj = allObj.concat(_this.fullFillAllPets(allPets));
 
@@ -238,7 +216,6 @@ export default class PetsTable extends Component {
             for(var i=0; i<=number; i+=1000) {
                 query.skip(i);
                 query.find().then(function (pets) {
-                  console.log(pets);
                   var sorted = pets.sort(function(a, b) {
                     if(a.get('pet').id < b.get('pet').id) return -1;
                     if(a.get('pet').id > b.get('pet').id) return 1;
@@ -257,7 +234,6 @@ export default class PetsTable extends Component {
                 });
             }
 
-            console.log(number);
         });
     };
 
