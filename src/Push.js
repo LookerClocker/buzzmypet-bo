@@ -39,18 +39,17 @@ export default class Push extends Component {
             console.log(error);
         });
 
-        this.setState({
-            message: '',
-            url: '',
-            open: false,
-            snackbar: ''
-        });
     };
 
     //Get All users from cloud code function
     createEventOnCloudCode = (users, message, url)=> {
       var _this = this;
       console.log("createEventOnCloudCode...");
+      console.log(users);
+      console.log("message: ", message);
+      console.log("urlL: ", url);
+
+
       Parse.Cloud.run('CreateEvent', {
         eventType: 4,
         users: users,
@@ -60,6 +59,14 @@ export default class Push extends Component {
           console.log(success);
       }, function (error) {
           console.log(error);
+      });
+
+      
+      this.setState({
+          message: '',
+          url: '',
+          open: false,
+          snackbar: ''
       });
     };
 

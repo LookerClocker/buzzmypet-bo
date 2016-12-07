@@ -254,6 +254,7 @@ export default class UsersTable extends Component {
 
     render() {
         PubSub.publish('rows', this.getRows());
+        console.log("render");
         return (
             <div>
             <Loader loaded={this.state.loaded}>
