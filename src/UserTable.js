@@ -133,7 +133,7 @@ export default class UsersTable extends Component {
       console.log("getUsersFromCloudCode...");
       Parse.Cloud.run('retrieveAllObjects', {
         object_type: "User", // REQUIRED - string: name of your Parse class
-        include: "pets",
+          include: ["pets"],
         //update_at: moment().toDate(), // OPTIONAL - JS Date object: Only retrieve objects where update_at is higher than...
         //only_objectId: true|false // OPTIONAL - boolean: the result will only be composed by objectId + date fields, otherwise all attributes are returned.
       }).then(function(objects) {
